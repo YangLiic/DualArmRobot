@@ -1,1 +1,13 @@
 .env
+.venv
+
+# C++ 编译产物
+ino_motor/cpp_version/prev
+ino_motor/cpp_version/servo_test
+ino_motor/cpp_version/*.so
+ino_motor/cpp_version/build/
+ino_motor/cpp_version/examples/*_test
+
+# Python 缓存
+__pycache__/
+*.pyc

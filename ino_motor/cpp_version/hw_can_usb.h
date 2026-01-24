@@ -21,6 +21,7 @@ private:
     int time_out_;
     int serial_fd_;
     bool running_;
+    bool silent_mode_;  // 静默模式：不打印接收消息
     
     uint32_t current_can_id_;
     uint8_t current_data_[8];
@@ -38,6 +39,12 @@ public:
     
     void get_can_id(uint32_t &can_id);
     void get_data(uint8_t* data, uint8_t &dlc);
+    
+    void setSilentMode(bool silent) { silent_mode_ = silent; }
+    bool isSilentMode() const { return silent_mode_; }
+    
+    void stopRunning() { running_ = false; }
+    bool isRunning() const { return running_; }
     
     CanInterfaceUsb(const std::string& port_name, int baud_rate, int time_out);
     ~CanInterfaceUsb();

@@ -10,10 +10,11 @@ SERIAL_PORT = '/dev/ttyUSB0'
 BAUD_RATE = 9600 
 
 class InovanceServo:
-    def __init__(self, port, baud):
+    def __init__(self, port, baud, node_id=0x601):
         self.ser = serial.Serial(port, baud, timeout=0.1)
+        self.node_id = node_id
         if self.ser.is_open:
-            print(f"✅ 串口 {port} 已打开")
+            print(f"✅ 串口 {port} 已打开, 节点 ID: 0x{node_id:03X}")
 
     def close(self):
         self.ser.close()
@@ -71,56 +72,56 @@ class InovanceServo:
             print(f"   └── 收到: {resp.hex().upper()}")
 
     def enable_motor(self):
-        print("\n--- 开始使能流程 ---")
+        print(f"\n--- 开始使能流程 (节点 0x{self.node_id:03X}) ---")
         # 1. 设置速度模式 (0x6060 = 3)
-        # ID: 601, Data: 2F 60 60 00 03 00 00 00
-        self.send_can_packet(0x601, [0x2F, 0x60, 0x60, 0x00, 0x03, 0x00, 0x00, 0x00])
+        self.send_can_packet(self.node_id, [0x2F, 0x60, 0x60, 0x00, 0x03, 0x00, 0x00, 0x00])
         
         # 2. 状态机跳转: Shutdown (0x06)
-        self.send_can_packet(0x601, [0x2B, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00])
+        self.send_can_packet(self.node_id, [0x2B, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00])
         time.sleep(0.1)
         
         # 3. 状态机跳转: Switch On (0x07)
-        self.send_can_packet(0x601, [0x2B, 0x40, 0x60, 0x00, 0x07, 0x00, 0x00, 0x00])
+        self.send_can_packet(self.node_id, [0x2B, 0x40, 0x60, 0x00, 0x07, 0x00, 0x00, 0x00])
         time.sleep(0.1)
         
         # 4. 状态机跳转: Enable Operation (0x0F) - 此时锁轴
-        self.send_can_packet(0x601, [0x2B, 0x40, 0x60, 0x00, 0x0F, 0x00, 0x00, 0x00])
+        self.send_can_packet(self.node_id, [0x2B, 0x40, 0x60, 0x00, 0x0F, 0x00, 0x00, 0x00])
         print("✅ 电机应该已锁轴")
         
         # 5. NMT 启动 (0x01) - 激活 PDO
-        # ID: 000, Data: 01 00
         self.send_can_packet(0x000, [0x01, 0x00])
         print("✅ NMT 已启动，PDO 应该开始刷屏")
 
     def set_velocity(self, rpm):
-        print(f"\n--- 设置速度: {rpm} RPM ---")
+        print(f"\n--- 设置速度: {rpm} RPM (节点 0x{self.node_id:03X}) ---")
         # 换算 RPM 到 编码器单位 (23位编码器)
-        # 1 RPM = 8388608 / 60 ≈ 139810 pulse/sec
-        # 这里的单位是 pulse/sec (假设驱动器内部通过电子齿轮比或直接脉冲量计算)
-        # 为了简单，我们直接用你之前测试成功的 "大数值"
         # 60 RPM = 0x00800000 (8388608)
+        encoder_value = (rpm * 0x00800000) // 60
         
-        # 这是一个示例数值，你可以根据需要修改
-        # Data: 23 FF 60 00 [Data 4Bytes]
-        
-        # 使用你验证过的 60 RPM 值: 00 00 80 00 (Little Endian)
-        speed_data = [0x23, 0xFF, 0x60, 0x00, 0x00, 0x00, 0x80, 0x00] 
-        self.send_can_packet(0x601, speed_data)
+        speed_data = [
+            0x23, 0xFF, 0x60, 0x00,
+            (encoder_value >> 0) & 0xFF,
+            (encoder_value >> 8) & 0xFF,
+            (encoder_value >> 16) & 0xFF,
+            (encoder_value >> 24) & 0xFF
+        ]
+        self.send_can_packet(self.node_id, speed_data)
 
     def stop_motor(self):
-        print("\n--- 停止电机 ---")
+        print(f"\n--- 停止电机 (节点 0x{self.node_id:03X}) ---")
         # 速度设为 0
-        self.send_can_packet(0x601, [0x23, 0xFF, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00])
+        self.send_can_packet(self.node_id, [0x23, 0xFF, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00])
         # 去使能 (Shutdown)
-        self.send_can_packet(0x601, [0x2B, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00])
+        self.send_can_packet(self.node_id, [0x2B, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00])
         # NMT 预操作 (停止刷屏)
         self.send_can_packet(0x000, [0x80, 0x00])
 
 # ================= 主程序 =================
 if __name__ == "__main__":
+    NODE_ID = 0x601 # 400W电机
+    
     try:
-        servo = InovanceServo(SERIAL_PORT, BAUD_RATE)
+        servo = InovanceServo(SERIAL_PORT, BAUD_RATE, node_id=NODE_ID)
         
         # 1. 启动
         servo.enable_motor()
@@ -143,5 +144,5 @@ if __name__ == "__main__":
 
 """
 source .venv/bin/activate
-.venv/bin/python ino_motor/py_version/servo_driver.py
+python ino_motor/py_version/servo_driver_400.py
 """

@@ -13,7 +13,7 @@ namespace pg
 {
 
 CanInterfaceUsb::CanInterfaceUsb(const std::string& port_name, int baud_rate, int time_out):
-            port_name_(port_name), baud_rate_(baud_rate), running_(true), time_out_(time_out) {
+            port_name_(port_name), baud_rate_(baud_rate), running_(true), time_out_(time_out), silent_mode_(false) {
     current_can_id_ = 0;
     current_dlc_ = 0;
     memset(current_data_, 0, sizeof(current_data_));
@@ -22,8 +22,10 @@ CanInterfaceUsb::CanInterfaceUsb(const std::string& port_name, int baud_rate, in
 
 CanInterfaceUsb::~CanInterfaceUsb()
 {
+    running_ = false;  // 确保停止接收循环
     if (serial_fd_ >= 0) {
         close(serial_fd_);
+        serial_fd_ = -1;
     }
 }
 
@@ -141,11 +143,13 @@ int CanInterfaceUsb::can_send(uint32_t can_id, const uint8_t* data, size_t size)
     }
     
     // Debug output
-    printf("发送 [ID:0x%03X]: ", can_id);
-    for (int i = 0; i < 17; i++) {
-        printf("%02X ", frame[i]);
+    if (!silent_mode_) {
+        printf("发送 [ID:0x%03X]: ", can_id);
+        for (int i = 0; i < 17; i++) {
+            printf("%02X ", frame[i]);
+        }
+        printf("\n");
     }
-    printf("\n");
     
     return 0;
 }
@@ -159,11 +163,13 @@ int CanInterfaceUsb::parse_frame(const uint8_t* buffer, size_t len)
                 current_can_id_ = (buffer[i + 6] << 8) | buffer[i + 7];
                 memcpy(current_data_, &buffer[i + 8], 8);
                 
-                printf("   └── 收到: ");
-                for (int j = 0; j < 17; j++) {
-                    printf("%02X", buffer[i + j]);
+                if (!silent_mode_) {
+                    printf("   └── 收到: ");
+                    for (int j = 0; j < 17; j++) {
+                        printf("%02X", buffer[i + j]);
+                    }
+                    printf("\n");
                 }
-                printf("\n");
                 
                 decode();
                 
@@ -195,8 +201,10 @@ int CanInterfaceUsb::can_dump()
         int ret = select(serial_fd_ + 1, &rdfs, NULL, NULL, &timeout);
         
         if (ret < 0) {
+            // 如果不再运行，正常退出
+            if (!running_) break;
             perror("select");
-            continue;
+            break;  // select 错误时退出，避免循环报错
         } else if (ret == 0) {
             continue;
         } else {
