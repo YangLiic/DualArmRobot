@@ -478,4 +478,42 @@ bool InovanceServo::nmtPreOperational()
     return true;
 }
 
+// ==================== 抱闸控制 ====================
+
+bool InovanceServo::releaseBrake()
+{
+    std::cout << "\n🔓 --- 松闸 (释放抱闸) ---" << std::endl;
+    std::cout << "⚠️  警告：电机将失去保持力！" << std::endl;
+    
+    // H0d.26 (强制开启抱闸)
+    // 通讯地址: 0x200D, 子索引 0x1B (27)
+    // 值: 2 = 强制松闸
+    uint8_t data[2] = {0x02, 0x00};  // 值 = 2
+    
+    if (!writeSDO(0x200D, 0x1B, data, 2)) {
+        std::cerr << "❌ 松闸失败" << std::endl;
+        return false;
+    }
+    
+    std::cout << "✅ 松闸成功，电机可手动转动" << std::endl;
+    return true;
+}
+
+bool InovanceServo::lockBrake()
+{
+    std::cout << "\n🔒 --- 锁闸 (恢复抱闸) ---" << std::endl;
+    
+    // H0d.26 (强制开启抱闸)
+    // 值: 0 = 无强制（恢复正常）
+    uint8_t data[2] = {0x00, 0x00};  // 值 = 0
+    
+    if (!writeSDO(0x200D, 0x1B, data, 2)) {
+        std::cerr << "❌ 锁闸失败" << std::endl;
+        return false;
+    }
+    
+    std::cout << "✅ 锁闸成功" << std::endl;
+    return true;
+}
+
 } // namespace pg

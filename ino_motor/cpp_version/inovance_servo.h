@@ -160,6 +160,23 @@ public:
      */
     bool nmtPreOperational();
     
+    // ==================== 抱闸控制 ====================
+    
+    /**
+     * @brief 松闸 (释放抱闸，电机可手动转动)
+     * 
+     * 写入 H0d.26 = 2，强制松闸
+     * 注意：松闸后电机将失去保持力，垂直安装时负载会下落！
+     */
+    bool releaseBrake();
+    
+    /**
+     * @brief 锁闸 (恢复正常抱闸)
+     * 
+     * 写入 H0d.26 = 0，恢复正常抱闸状态
+     */
+    bool lockBrake();
+    
     // ==================== 状态查询 ====================
     
     bool isEnabled() const { return motor_enabled_; }

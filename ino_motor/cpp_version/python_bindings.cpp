@@ -130,6 +130,13 @@ PYBIND11_MODULE(inovance_servo, m) {
         .def("nmt_pre_operational", &InovanceServoPython::nmtPreOperational,
              "NMT 预操作")
         
+        // 抱闸控制
+        .def("release_brake", &InovanceServoPython::releaseBrake,
+             "松闸（释放抱闸，电机可手动转动）\n\n"
+             "注意：松闸后电机将失去保持力，垂直安装时负载会下落！")
+        .def("lock_brake", &InovanceServoPython::lockBrake,
+             "锁闸（恢复正常抱闸）")
+        
         // 调试控制
         .def("set_silent_mode", &InovanceServoPython::setSilentMode,
              py::arg("silent"),

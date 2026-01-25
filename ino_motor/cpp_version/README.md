@@ -113,6 +113,15 @@ servo.nmtStart();           // 启动 PDO (enable 自动调用)
 servo.nmtPreOperational();  // 停止 PDO (stop 自动调用)
 ```
 
+### 抱闸控制
+
+```cpp
+servo.releaseBrake();  // 松闸，电机可手动转动
+servo.lockBrake();     // 锁闸，恢复正常
+```
+
+**警告**：松闸后电机将失去保持力，垂直安装时负载会下落！
+
 ### 调试控制
 
 ```cpp
