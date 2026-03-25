@@ -27,7 +27,9 @@ except ImportError as e:
     print(f"\n错误详情: {e}")
     sys.exit(1)
 
-SERIAL_PORT = '/dev/ttyUSB0'
+# 默认串口，可通过环境变量 INO_MOTOR_PORT 覆盖
+# 例如: export INO_MOTOR_PORT=/dev/ttyUSB1
+SERIAL_PORT = os.environ.get('INO_MOTOR_PORT', '/dev/ttyUSB0')
 BAUD_RATE = 9600
 
 def main():

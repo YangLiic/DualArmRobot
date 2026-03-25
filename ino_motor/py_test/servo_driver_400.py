@@ -1,10 +1,11 @@
 import serial
 import time
 import struct
+import os
 
 # ================= 配置区域 =================
-# 端口号：根据你的 ls /dev/tty* 结果修改
-SERIAL_PORT = '/dev/ttyUSB0' 
+# 默认串口，可通过环境变量 INO_MOTOR_PORT 覆盖
+SERIAL_PORT = os.environ.get('INO_MOTOR_PORT', '/dev/ttyUSB0')
 # 波特率：适配器与电脑通信的速率（注意不是CAN波特率）
 # 大多数国产适配器内部是透传，这里填 115200 或 2000000 (2M) 都可以
 BAUD_RATE = 9600 
@@ -140,7 +141,7 @@ if __name__ == "__main__":
         
     except Exception as e:
         print(f"\n❌ 发生错误: {e}")
-        print("提示：请检查 USB 权限 (sudo chmod 777 /dev/ttyUSB0)")
+        print(f"提示：请检查 USB 权限 (sudo chmod 777 {SERIAL_PORT})")
 
 """
 source .venv/bin/activate

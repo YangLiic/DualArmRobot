@@ -8,6 +8,10 @@ ino_motor/cpp_version/*.so
 ino_motor/cpp_version/build/
 ino_motor/cpp_version/examples/*_test
 
+# CyberGear C++ 编译产物
+CyberGear/cpp_version/build/
+CyberGear/cpp_version/*.so
+
 # Python 缓存
 __pycache__/
 *.pyc

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <thread>
 #include <csignal>
+#include <cstdlib>
 #include <unistd.h>
 #include "inovance_servo.h"
 
@@ -33,7 +34,9 @@ int main(int argc, char** argv)
 {
     signal(SIGINT, signalHandler);
     
-    std::string port_name = "/dev/ttyUSB0";
+    // 默认串口，可通过环境变量 INO_MOTOR_PORT 覆盖
+    const char* env_port = std::getenv("INO_MOTOR_PORT");
+    std::string port_name = env_port ? env_port : "/dev/ttyUSB0";
     int baud_rate = 9600;
     uint32_t node_id = 0x601;  // 默认值
     

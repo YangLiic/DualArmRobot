@@ -1,132 +1,83 @@
-# DualArmRobot
+# 双臂机器人 (DualArmRobot)
 
-双臂机器人项目
+本项目旨在通过多个 USB-CAN 适配器实现对多台电机的协同控制，目前共涉及四台电机：
 
-> **重要：每次重新插拔 USB 后，必须先执行串口权限设置！**
-> ```bash
-> sudo chmod 777 /dev/ttyUSB0
-> ```
+## 电机配置与模块分配
 
-## ino_motor - 汇川伺服电机驱动
+为了保证通信效率和兼容性，项目将电机分为两组，分别连接到两个 USB-CAN 模块：
 
-汇川伺服电机控制模块，通过 **CANopen** 协议通信。
+### 1. Inovance 电机组 (2台)
+*   **电机型号**：汇川伺服电机 (Node ID: `0x601`, `0x602`)
+*   **共享模块**：模块 A
+*   **通信参数**：
+    *   **串口波特率**：`9600 bps`
+    *   **CAN 总线波特率**：`500 kbps`
+*   **SDK 目录**：`ino_motor/`
 
-### 目录结构
-
-```
-ino_motor/
-├── py_test/                    # Python 版本 (快速测试)
-│   ├── servo_driver_400.py     # 400W 电机 (节点 0x601)
-│   └── servo_driver_750.py     # 750W 电机 (节点 0x602)
-├── interactive_control_cpp.py  # 交互式控制程序
-├── brake_control.py            # 抱闸控制工具
-└── cpp_version/                # C++ SDK
-```
+### 2. 小米 & 瑞龙电机组 (2台)
+*   **电机型号**：
+    *   小米 **CyberGear** (Node ID: `0x01` )
+    *   瑞龙 **ZE300** (待开发)
+*   **共享模块**：模块 B
+*   **通信参数**：
+    *   **串口波特率**：`921600 bps`
+    *   **CAN 总线波特率**：`1000 kbps (1 Mbps)`
+*   **SDK 目录**：`CyberGear/`
 
 ---
 
-## 快速开始 (Python 版本)
+## CAN-USB 模块连接与管理
 
-Python 版本用于简单测试，速度模式控制。
+由于两个模块使用的是相同的 CH340 芯片，Linux 下的默认设备名 (`/dev/ttyUSB0`, `/dev/ttyUSB1`) 会随着**插入顺序**而变化。
 
-### 1. 事先准备
+### 端口确定与权限
+
+1.  **确定序号**：通常先插入的模块对应较小的数值 (`ttyUSB0`)。建议通过以下命令查看连接情况：
+    ```bash
+    # 查看设备列表
+    ls /dev/ttyUSB*
+
+    # 查看物理端口映射（推荐，路径固定）
+    ls -la /dev/serial/by-path/
+    ```
+2.  **赋予权限**：每次重新插拔后，需要对使用的端口赋权：
+    ```bash
+    sudo chmod 777 /dev/ttyUSB0
+    sudo chmod 777 /dev/ttyUSB1
+    ```
+
+### 3. 环境准备与编译 (首次使用)
+
+在运行控制程序之前，需要先编译对应的 C++ 驱动模块：
 
 ```bash
-# 查看 USB 串口设备
-ls /dev/ttyUSB*
-
-# 如果是 /dev/ttyUSB0，赋予权限
-sudo chmod 777 /dev/ttyUSB0
-```
-
-### 2. 进入项目目录
-
-```bash
-cd DualArmRobot
-```
-
-### 3. UV 环境使用
-
-[UV](https://github.com/astral-sh/uv) 是一个快速的 Python 包管理器。
-
-```bash
-# 创建虚拟环境 (首次)
-uv venv
-
 # 激活环境
 source .venv/bin/activate
 
-# 安装依赖
-uv pip install pyserial
-```
+# 编译 Inovance 驱动
+cd ino_motor/cpp_version && python setup.py build_ext --inplace && cd ../..
 
-### 4. 运行测试
-
-```bash
-# 激活环境后运行
-python ino_motor/py_test/servo_driver_400.py   # 测试 400W 电机
-python ino_motor/py_test/servo_driver_750.py   # 测试 750W 电机
+# 编译 CyberGear 驱动
+cd CyberGear/cpp_version && python setup.py build_ext --inplace && cd ../..
 ```
 
 ---
 
-## 交互式控制程序 (C++ SDK)
+## 运行示例
 
+### 单次执行示例：
 ```bash
-cd ino_motor/cpp_version
+# 启动 Inovance 交互控制 (需指定端口，端口号根据 ls /dev/ttyUSB* 确定)
+INO_MOTOR_PORT=/dev/ttyUSB0 python ino_motor/interactive_control_cpp.py
 
-uv pip install setuptools pybind11
-sudo apt install python3-dev
-
-python setup.py build_ext --inplace
-
-cd ../..
-python ino_motor/interactive_control_cpp.py
+# 启动 CyberGear 交互控制 (需指定端口，端口号根据 ls /dev/ttyUSB* 确定)
+CYBERGEAR_PORT=/dev/ttyUSB1 python CyberGear/interactive_control.py
 ```
-
-### 电机方向说明
-
-| 电机 | 正值 (+) | 负值 (-) |
-|------|----------|----------|
-| 电机1 (0x601) | 双臂上升 | 双臂下降 |
-| 电机2 (0x602) | 机器人右转 (顺时针) | 机器人左转 (逆时针) |
-
-### 安全运动范围
-
-| 模式 | 安全值 | 说明 |
-|------|--------|------|
-| 速度模式 | ±100 RPM | 非常安全的速度 |
-| 位置模式 | ±180° | 实际仅上升（下降）或转动一点角度|
-
-### 还需要后期使用者标定
-
-详见 [ino_motor/cpp_version/README.md](ino_motor/cpp_version/README.md)
 
 ---
 
-## 抱闸控制
+## 硬件信息参考
 
-松闸后电机可手动转动，用于调整机械位置。
-
-```bash
-cd ino_motor/cpp_version
-python setup.py build_ext --inplace
-
-cd ../..
-# 松闸电机1 (0x601)
-python ino_motor/brake_control.py release 1
-
-# 松闸电机2 (0x602)
-python ino_motor/brake_control.py release 2
-
-# 锁闸 (恢复正常)
-python ino_motor/brake_control.py lock 1
-
-python ino_motor/brake_control.py lock 2
-# 交互模式
-python ino_motor/brake_control.py
-```
-
-**警告**：松闸后电机失去保持力，垂直安装时负载会下落！
-
----
+*   **转换芯片**：CH340 (QinHeng Electronics)
+*   **USB VID:PID**：`1a86:7523`
+*   **CAN 协议支持**：支持 CAN 2.0A (标准帧) 与 CAN 2.0B (扩展帧)
