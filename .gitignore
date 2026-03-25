@@ -12,6 +12,10 @@ ino_motor/cpp_version/examples/*_test
 CyberGear/cpp_version/build/
 CyberGear/cpp_version/*.so
 
+# ZE300 C++ 编译产物
+ZE300/cpp_version/build/
+ZE300/cpp_version/*.so
+
 # Python 缓存
 __pycache__/
 *.pyc

@@ -30,7 +30,7 @@ except ImportError as e:
 # 默认串口，可通过环境变量覆盖
 SERIAL_PORT = os.environ.get('CYBERGEAR_PORT', '/dev/ttyUSB0')
 BAUD_RATE = 921600
-MOTOR_ID  = int(os.environ.get('CYBERGEAR_MOTOR_ID',  '0x01'), 0)
+MOTOR_ID  = int(os.environ.get('CYBERGEAR_MOTOR_ID',  '0x02'), 0)
 MASTER_ID = int(os.environ.get('CYBERGEAR_MASTER_ID', '0xFD'), 0)
 
 # 行程限制 (°)，上电后生效
