@@ -17,3 +17,7 @@ ZE300/cpp_version/*.so
 # Python 缓存
 __pycache__/
 *.pyc
+
+# 本地资料（不纳入版本控制）
+CyberGear/小米电机专用资料/
+CyberGear/头部旋转电机-小米/
