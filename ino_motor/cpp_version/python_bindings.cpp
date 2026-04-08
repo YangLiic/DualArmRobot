@@ -87,6 +87,41 @@ PYBIND11_MODULE(inovance_servo, m) {
              "设置速度（RPM）\n\n"
              "参数:\n"
              "  rpm: 转速，正值顺时针，负值逆时针")
+        .def("set_max_torque_limit", &InovanceServoPython::setMaxTorqueLimit,
+             py::arg("permille"),
+             "设置最大转矩限制（千分比，1000=1倍额定转矩）")
+        .def("set_directional_torque_limits", &InovanceServoPython::setDirectionalTorqueLimits,
+             py::arg("forward_permille"),
+             py::arg("reverse_permille"),
+             "设置正反向最大转矩限制（千分比）")
+        .def("set_torque_ramp", &InovanceServoPython::setTorqueRamp,
+             py::arg("permille_per_second"),
+             "设置转矩斜坡（千分比每秒）")
+        .def("read_actual_torque_permille", &InovanceServoPython::readActualTorquePermille,
+             "读取实际转矩（千分比）")
+        .def("read_phase_current_amp", &InovanceServoPython::readPhaseCurrentAmp,
+             "读取相电流有效值（安培）")
+        .def("read_average_load_percent", &InovanceServoPython::readAverageLoadPercent,
+             "读取平均负载率（百分比）")
+        .def("read_position_deviation", &InovanceServoPython::readPositionDeviation,
+             "读取位置偏差")
+        .def("enable_collision_protection", &InovanceServoPython::enableCollisionProtection,
+             py::arg("torque_limit_permille") = 1200,
+             py::arg("trigger_torque_permille") = 900,
+             py::arg("trigger_current_amp") = 0.0,
+             py::arg("trigger_position_deviation") = 0,
+             py::arg("consecutive_samples") = 3,
+             py::arg("poll_interval_ms") = 20,
+             py::arg("use_quick_stop") = true,
+             "启用碰撞保护（转矩限制 + 反馈监控 + 快速停机）")
+        .def("disable_collision_protection", &InovanceServoPython::disableCollisionProtection,
+             "禁用碰撞保护")
+        .def("is_collision_protection_enabled", &InovanceServoPython::isCollisionProtectionEnabled,
+             "查询碰撞保护是否启用")
+        .def("was_collision_triggered", &InovanceServoPython::wasCollisionTriggered,
+             "查询碰撞保护是否已触发")
+        .def("clear_collision_triggered", &InovanceServoPython::clearCollisionTriggered,
+             "清除碰撞保护触发标志")
         
         // 位置控制
         .def("set_position", &InovanceServoPython::setPosition,

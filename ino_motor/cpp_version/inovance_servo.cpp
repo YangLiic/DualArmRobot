@@ -2,6 +2,7 @@
  * Inovance Servo SDK - CANopen Implementation
  **/
 #include "inovance_servo.h"
+#include <chrono>
 #include <unistd.h>
 #include <cstring>
 #include <cmath>
@@ -14,10 +15,21 @@ constexpr uint16_t OD_CONTROL_WORD = 0x6040;
 constexpr uint16_t OD_STATUS_WORD = 0x6041;
 constexpr uint16_t OD_OPERATION_MODE = 0x6060;
 constexpr uint16_t OD_TARGET_POSITION = 0x607A;
+constexpr uint16_t OD_POSITION_DEVIATION = 0x60F4;
+constexpr uint16_t OD_TARGET_TORQUE = 0x6071;
+constexpr uint16_t OD_MAX_TORQUE = 0x6072;
+constexpr uint16_t OD_ACTUAL_TORQUE = 0x6077;
+constexpr uint16_t OD_TORQUE_RAMP = 0x6087;
 constexpr uint16_t OD_TARGET_VELOCITY = 0x60FF;
 constexpr uint16_t OD_PROFILE_VELOCITY = 0x6081;
 constexpr uint16_t OD_PROFILE_ACCELERATION = 0x6083;
 constexpr uint16_t OD_PROFILE_DECELERATION = 0x6084;
+constexpr uint16_t OD_FORWARD_TORQUE_LIMIT = 0x60E0;
+constexpr uint16_t OD_REVERSE_TORQUE_LIMIT = 0x60E1;
+constexpr uint16_t OD_AVERAGE_LOAD = 0x200B;
+constexpr uint8_t OD_AVERAGE_LOAD_SUB = 0x0D;
+constexpr uint16_t OD_PHASE_CURRENT = 0x200B;
+constexpr uint8_t OD_PHASE_CURRENT_SUB = 0x19;
 
 // 编码器参数
 constexpr int32_t ENCODER_RESOLUTION = 8388608; // 23位编码器 (2^23)
@@ -26,9 +38,16 @@ constexpr double PULSES_PER_DEGREE = ENCODER_RESOLUTION / 360.0;
 InovanceServo::InovanceServo(const std::string& port_name, int baud_rate, uint32_t node_id)
     : CanInterfaceUsb(port_name, baud_rate, 100), 
       node_id_(node_id), 
+      response_id_(node_id >= 0x80 ? node_id - 0x80 : node_id),
       motor_enabled_(false),
       current_mode_(OperationMode::VELOCITY),
-      direction_inverted_(false)
+      direction_inverted_(false),
+      actual_torque_available_(false),
+      phase_current_available_(false),
+      position_deviation_available_(false),
+      collision_thread_running_(false),
+      collision_protection_enabled_(false),
+      collision_triggered_(false)
 {
     std::cout << "🔧 Inovance Servo SDK 初始化" << std::endl;
     std::cout << "   节点 ID: 0x" << std::hex << node_id_ << std::dec << std::endl;
@@ -42,6 +61,7 @@ void InovanceServo::setDirectionInverted(bool inverted)
 
 InovanceServo::~InovanceServo()
 {
+    disableCollisionProtection();
     if (motor_enabled_) {
         stop();
     }
@@ -61,8 +81,9 @@ void InovanceServo::decode()
 
 // ==================== 内部辅助函数 ====================
 
-bool InovanceServo::writeSDO(uint16_t index, uint8_t subindex, const uint8_t* data, size_t len)
+bool InovanceServo::writeSDO(uint16_t index, uint8_t subindex, const uint8_t* data, size_t len, bool wait_response)
 {
+    std::lock_guard<std::mutex> lock(io_mutex_);
     uint8_t frame[8];
     
     // SDO 写命令
@@ -90,12 +111,118 @@ bool InovanceServo::writeSDO(uint16_t index, uint8_t subindex, const uint8_t* da
         memset(&frame[4 + len], 0, 4 - len);
     }
     
+    const uint64_t sequence = getFrameSequence();
     if (can_send(node_id_, frame, 8) < 0) {
         return false;
     }
-    
-    usleep(10000); // 10ms 延迟
-    return true;
+
+    if (!wait_response) {
+        usleep(10000);
+        return true;
+    }
+
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(350);
+    while (std::chrono::steady_clock::now() < deadline) {
+        const int remaining_ms = static_cast<int>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()).count());
+        if (remaining_ms <= 0) {
+            break;
+        }
+
+        CanFrame rx{};
+        if (!waitForNextFrame(sequence, rx, remaining_ms)) {
+            break;
+        }
+
+        if (rx.can_id != response_id_) {
+            continue;
+        }
+        if (rx.dlc < 4) {
+            continue;
+        }
+        if (rx.data[1] != (index & 0xFF) || rx.data[2] != ((index >> 8) & 0xFF) || rx.data[3] != subindex) {
+            continue;
+        }
+        if (rx.data[0] == 0x80) {
+            std::cerr << "❌ SDO写入被驱动器拒绝: 0x" << std::hex << index << ":" << static_cast<int>(subindex) << std::dec << std::endl;
+            return false;
+        }
+        if (rx.data[0] == 0x60) {
+            return true;
+        }
+    }
+
+    std::cerr << "❌ SDO写入超时: 0x" << std::hex << index << ":" << static_cast<int>(subindex) << std::dec << std::endl;
+    return false;
+}
+
+bool InovanceServo::readSDO(uint16_t index, uint8_t subindex, uint8_t* data, size_t len, int timeout_ms, bool log_error)
+{
+    if (!(len == 1 || len == 2 || len == 4)) {
+        if (log_error) {
+            std::cerr << "不支持的数据长度: " << len << std::endl;
+        }
+        return false;
+    }
+
+    std::lock_guard<std::mutex> lock(io_mutex_);
+
+    uint8_t frame[8] = {
+        0x40,
+        static_cast<uint8_t>(index & 0xFF),
+        static_cast<uint8_t>((index >> 8) & 0xFF),
+        subindex,
+        0x00, 0x00, 0x00, 0x00
+    };
+
+    uint64_t sequence = getFrameSequence();
+    if (can_send(node_id_, frame, 8) < 0) {
+        return false;
+    }
+
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout_ms);
+    while (std::chrono::steady_clock::now() < deadline) {
+        const int remaining_ms = static_cast<int>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()).count());
+        if (remaining_ms <= 0) {
+            break;
+        }
+
+        CanFrame rx{};
+        if (!waitForNextFrame(sequence, rx, remaining_ms)) {
+            break;
+        }
+        sequence = rx.sequence;
+
+        if (rx.can_id != response_id_) {
+            continue;
+        }
+        if (rx.dlc < 4) {
+            continue;
+        }
+        if (rx.data[1] != (index & 0xFF) || rx.data[2] != ((index >> 8) & 0xFF) || rx.data[3] != subindex) {
+            continue;
+        }
+        if (rx.data[0] == 0x80) {
+            if (log_error) {
+                std::cerr << "❌ SDO读取被驱动器拒绝: 0x" << std::hex << index << ":" << static_cast<int>(subindex) << std::dec << std::endl;
+            }
+            return false;
+        }
+
+        const uint8_t expected_cmd = (len == 1) ? 0x4F : ((len == 2) ? 0x4B : 0x43);
+        if (rx.data[0] != expected_cmd) {
+            continue;
+        }
+
+        memcpy(data, &rx.data[4], len);
+        return true;
+    }
+
+    if (log_error) {
+        std::cerr << "❌ SDO读取超时: 0x" << std::hex << index << ":" << static_cast<int>(subindex) << std::dec << std::endl;
+    }
+    return false;
 }
 
 bool InovanceServo::setOperationMode(OperationMode mode)
@@ -129,7 +256,7 @@ bool InovanceServo::sendControlWord(ControlWord cmd)
         static_cast<uint8_t>((cmd_value >> 8) & 0xFF)
     };
     
-    return writeSDO(OD_CONTROL_WORD, 0x00, data, 2);
+    return writeSDO(OD_CONTROL_WORD, 0x00, data, 2, false);
 }
 
 // ==================== 基础控制 ====================
@@ -230,6 +357,15 @@ bool InovanceServo::quickStop()
     return true;
 }
 
+void InovanceServo::stopCollisionProtectionThread()
+{
+    collision_protection_enabled_ = false;
+    collision_thread_running_ = false;
+    if (collision_thread_.joinable()) {
+        collision_thread_.join();
+    }
+}
+
 bool InovanceServo::stop()
 {
     std::cout << "\n🛑 --- 停止电机 ---" << std::endl;
@@ -285,12 +421,211 @@ bool InovanceServo::setVelocity(int32_t rpm)
         static_cast<uint8_t>((encoder_value >> 24) & 0xFF)
     };
     
-    if (!writeSDO(OD_TARGET_VELOCITY, 0x00, data, 4)) {
+    if (!writeSDO(OD_TARGET_VELOCITY, 0x00, data, 4, false)) {
         std::cerr << "❌ 设置速度失败" << std::endl;
         return false;
     }
     
     return true;
+}
+
+bool InovanceServo::setMaxTorqueLimit(uint16_t permille)
+{
+    uint8_t data[2] = {
+        static_cast<uint8_t>(permille & 0xFF),
+        static_cast<uint8_t>((permille >> 8) & 0xFF)
+    };
+    return writeSDO(OD_MAX_TORQUE, 0x00, data, 2);
+}
+
+bool InovanceServo::setDirectionalTorqueLimits(uint16_t forward_permille, uint16_t reverse_permille)
+{
+    uint8_t forward_data[2] = {
+        static_cast<uint8_t>(forward_permille & 0xFF),
+        static_cast<uint8_t>((forward_permille >> 8) & 0xFF)
+    };
+    uint8_t reverse_data[2] = {
+        static_cast<uint8_t>(reverse_permille & 0xFF),
+        static_cast<uint8_t>((reverse_permille >> 8) & 0xFF)
+    };
+    return writeSDO(OD_FORWARD_TORQUE_LIMIT, 0x00, forward_data, 2)
+        && writeSDO(OD_REVERSE_TORQUE_LIMIT, 0x00, reverse_data, 2);
+}
+
+bool InovanceServo::setTorqueRamp(uint32_t permille_per_second)
+{
+    uint8_t data[4] = {
+        static_cast<uint8_t>((permille_per_second >> 0) & 0xFF),
+        static_cast<uint8_t>((permille_per_second >> 8) & 0xFF),
+        static_cast<uint8_t>((permille_per_second >> 16) & 0xFF),
+        static_cast<uint8_t>((permille_per_second >> 24) & 0xFF)
+    };
+    return writeSDO(OD_TORQUE_RAMP, 0x00, data, 4);
+}
+
+int16_t InovanceServo::readActualTorquePermille()
+{
+    uint8_t data[2];
+    if (!readSDO(OD_ACTUAL_TORQUE, 0x00, data, 2, 100, false)) {
+        return 0;
+    }
+    return static_cast<int16_t>(data[0] | (data[1] << 8));
+}
+
+double InovanceServo::readPhaseCurrentAmp()
+{
+    uint8_t data[2];
+    if (!readSDO(OD_PHASE_CURRENT, OD_PHASE_CURRENT_SUB, data, 2, 100, false)) {
+        return 0.0;
+    }
+    const uint16_t centi_amp = static_cast<uint16_t>(data[0] | (data[1] << 8));
+    return static_cast<double>(centi_amp) / 100.0;
+}
+
+double InovanceServo::readAverageLoadPercent()
+{
+    uint8_t data[2];
+    if (!readSDO(OD_AVERAGE_LOAD, OD_AVERAGE_LOAD_SUB, data, 2, 100, false)) {
+        return 0.0;
+    }
+    const uint16_t deci_percent = static_cast<uint16_t>(data[0] | (data[1] << 8));
+    return static_cast<double>(deci_percent) / 10.0;
+}
+
+int32_t InovanceServo::readPositionDeviation()
+{
+    uint8_t data[4];
+    if (!readSDO(OD_POSITION_DEVIATION, 0x00, data, 4, 100, false)) {
+        return 0;
+    }
+    return static_cast<int32_t>(
+        data[0]
+        | (data[1] << 8)
+        | (data[2] << 16)
+        | (data[3] << 24));
+}
+
+bool InovanceServo::enableCollisionProtection(
+    uint16_t torque_limit_permille,
+    uint16_t trigger_torque_permille,
+    double trigger_current_amp,
+    int32_t trigger_position_deviation,
+    int consecutive_samples,
+    int poll_interval_ms,
+    bool use_quick_stop)
+{
+    collision_config_.torque_limit_permille = torque_limit_permille;
+    collision_config_.forward_torque_limit_permille = 0;
+    collision_config_.reverse_torque_limit_permille = 0;
+    collision_config_.trigger_torque_permille = trigger_torque_permille;
+    collision_config_.trigger_current_amp = trigger_current_amp;
+    collision_config_.trigger_position_deviation = trigger_position_deviation;
+    collision_config_.consecutive_samples = std::max(1, consecutive_samples);
+    collision_config_.poll_interval_ms = std::max(5, poll_interval_ms);
+    collision_config_.use_quick_stop = use_quick_stop;
+    collision_triggered_ = false;
+
+    if (!setMaxTorqueLimit(torque_limit_permille)) {
+        std::cerr << "❌ 设置最大转矩限制失败" << std::endl;
+        return false;
+    }
+
+    uint8_t probe2[2];
+    uint8_t probe4[4];
+    actual_torque_available_ = readSDO(OD_ACTUAL_TORQUE, 0x00, probe2, 2, 150, false);
+    phase_current_available_ = readSDO(OD_PHASE_CURRENT, OD_PHASE_CURRENT_SUB, probe2, 2, 150, false);
+    position_deviation_available_ = readSDO(OD_POSITION_DEVIATION, 0x00, probe4, 4, 150, false);
+
+    if (!collision_thread_.joinable()) {
+        collision_thread_running_ = true;
+        collision_thread_ = std::thread([this]() {
+            collisionProtectionLoop();
+        });
+    }
+
+    collision_protection_enabled_ =
+        actual_torque_available_ || phase_current_available_ || position_deviation_available_;
+
+    std::cout << "🛡️  碰撞保护已启用: 转矩限制=" << torque_limit_permille
+              << "‰, 触发转矩=" << trigger_torque_permille << "‰";
+    if (trigger_current_amp > 0.0) {
+        std::cout << ", 触发电流=" << trigger_current_amp << "A";
+    }
+    if (trigger_position_deviation > 0) {
+        std::cout << ", 位置偏差阈值=" << trigger_position_deviation;
+    }
+    std::cout << std::endl;
+
+    if (!collision_protection_enabled_) {
+        std::cout << "⚠️  当前驱动未返回可用监控对象，已降级为“仅转矩限制”，不会执行自动碰撞停机。" << std::endl;
+    } else {
+        std::cout << "   可用监控: "
+                  << (actual_torque_available_ ? "actual_torque " : "")
+                  << (phase_current_available_ ? "phase_current " : "")
+                  << (position_deviation_available_ ? "position_deviation" : "")
+                  << std::endl;
+    }
+    return true;
+}
+
+void InovanceServo::disableCollisionProtection()
+{
+    stopCollisionProtectionThread();
+}
+
+void InovanceServo::collisionProtectionLoop()
+{
+    int consecutive_hits = 0;
+
+    while (collision_thread_running_) {
+        if (!collision_protection_enabled_ || !motor_enabled_) {
+            consecutive_hits = 0;
+            usleep(50000);
+            continue;
+        }
+
+        const int16_t actual_torque = actual_torque_available_ ? readActualTorquePermille() : 0;
+        const double phase_current = phase_current_available_ ? readPhaseCurrentAmp() : 0.0;
+        const int32_t position_deviation = position_deviation_available_ ? readPositionDeviation() : 0;
+
+        bool triggered = false;
+        if (actual_torque_available_
+            && std::abs(actual_torque) >= static_cast<int>(collision_config_.trigger_torque_permille)) {
+            triggered = true;
+        }
+        if (phase_current_available_
+            && collision_config_.trigger_current_amp > 0.0
+            && phase_current >= collision_config_.trigger_current_amp) {
+            triggered = true;
+        }
+        if (position_deviation_available_
+            && collision_config_.trigger_position_deviation > 0
+            && std::abs(position_deviation) >= collision_config_.trigger_position_deviation) {
+            triggered = true;
+        }
+
+        if (triggered) {
+            consecutive_hits++;
+        } else {
+            consecutive_hits = 0;
+        }
+
+        if (consecutive_hits >= collision_config_.consecutive_samples) {
+            collision_triggered_ = true;
+            collision_protection_enabled_ = false;
+            std::cerr << "\n🛑 碰撞保护触发: 实际转矩=" << actual_torque
+                      << "‰, 相电流=" << phase_current
+                      << "A, 位置偏差=" << position_deviation << std::endl;
+            if (collision_config_.use_quick_stop) {
+                quickStop();
+            } else {
+                stop();
+            }
+            consecutive_hits = 0;
+        }
+
+        usleep(collision_config_.poll_interval_ms * 1000);
+    }
 }
 
 // ==================== 位置控制 ====================
@@ -369,7 +704,7 @@ bool InovanceServo::startPositionMove(bool relative)
     
     uint8_t data[2] = {control_word, 0x00};
     
-    if (!writeSDO(OD_CONTROL_WORD, 0x00, data, 2)) {
+    if (!writeSDO(OD_CONTROL_WORD, 0x00, data, 2, false)) {
         std::cerr << "❌ 启动位置运动失败" << std::endl;
         return false;
     }

@@ -1,0 +1,57 @@
+[
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/servo_hub_qt_autogen/mocs_compilation.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/mocs_compilation.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/mocs_compilation.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/main.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/main.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/main.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/app/MainWindow.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/app/MainWindow.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/app/MainWindow.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/app/TorqueBarWidget.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/app/TorqueBarWidget.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/app/TorqueBarWidget.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/communication/CanBusWorker.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/communication/CanBusWorker.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/communication/CanBusWorker.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/communication/CommunicationManager.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/communication/CommunicationManager.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/communication/CommunicationManager.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/communication/SerialCanFrameCodec.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/communication/SerialCanFrameCodec.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/communication/SerialCanFrameCodec.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/models/MotorTableModel.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/models/MotorTableModel.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/models/MotorTableModel.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/models/Types.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/models/Types.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/models/Types.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/protocols/CanOpenProtocol.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/protocols/CanOpenProtocol.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/protocols/CanOpenProtocol.cpp"
+},
+{
+  "directory": "/home/yang/DualArmRobot/servo_hub_qt/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_SERIALPORT_LIB -DQT_WIDGETS_LIB -I/home/yang/DualArmRobot/servo_hub_qt/build/servo_hub_qt_autogen/include -I/home/yang/DualArmRobot/servo_hub_qt/src -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtSerialPort -fPIC -std=gnu++17 -o CMakeFiles/servo_hub_qt.dir/src/services/MotorService.cpp.o -c /home/yang/DualArmRobot/servo_hub_qt/src/services/MotorService.cpp",
+  "file": "/home/yang/DualArmRobot/servo_hub_qt/src/services/MotorService.cpp"
+}
+]

@@ -2,6 +2,7 @@
  * USB-CAN Adapter - Standalone Implementation (No ROS)
  **/
 #include <algorithm>
+#include <chrono>
 #include <iostream>
 #include <cstring>
 #include <sys/select.h>
@@ -13,7 +14,7 @@ namespace pg
 {
 
 CanInterfaceUsb::CanInterfaceUsb(const std::string& port_name, int baud_rate, int time_out):
-            port_name_(port_name), baud_rate_(baud_rate), running_(true), time_out_(time_out), silent_mode_(false) {
+            port_name_(port_name), baud_rate_(baud_rate), running_(true), time_out_(time_out), silent_mode_(false), frame_sequence_(0) {
     current_can_id_ = 0;
     current_dlc_ = 0;
     memset(current_data_, 0, sizeof(current_data_));
@@ -31,13 +32,44 @@ CanInterfaceUsb::~CanInterfaceUsb()
 
 void CanInterfaceUsb::get_can_id(uint32_t &can_id)
 {
+    std::lock_guard<std::mutex> lock(frame_mutex_);
     can_id = current_can_id_;
 }
 
 void CanInterfaceUsb::get_data(uint8_t* data, uint8_t &dlc)
 {
+    std::lock_guard<std::mutex> lock(frame_mutex_);
     memcpy(data, current_data_, 8);
     dlc = current_dlc_;
+}
+
+uint64_t CanInterfaceUsb::getFrameSequence() const
+{
+    std::lock_guard<std::mutex> lock(frame_mutex_);
+    return frame_sequence_;
+}
+
+bool CanInterfaceUsb::waitForNextFrame(uint64_t last_sequence, CanFrame& frame, int timeout_ms)
+{
+    std::unique_lock<std::mutex> lock(frame_mutex_);
+    auto has_next_frame = [&]() {
+        return !frame_queue_.empty() && frame_queue_.back().sequence > last_sequence;
+    };
+
+    if (!frame_cv_.wait_for(lock, std::chrono::milliseconds(timeout_ms), has_next_frame)) {
+        return false;
+    }
+
+    while (!frame_queue_.empty()) {
+        const CanFrame next = frame_queue_.front();
+        frame_queue_.pop_front();
+        if (next.sequence > last_sequence) {
+            frame = next;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 int CanInterfaceUsb::open_serial() {
@@ -159,9 +191,24 @@ int CanInterfaceUsb::parse_frame(const uint8_t* buffer, size_t len)
     for (size_t i = 0; i < len; i++) {
         if (buffer[i] == 0xAA && (i + 16) < len) {
             if (buffer[i + 16] == 0x7A) {
-                current_dlc_ = buffer[i + 3];
-                current_can_id_ = (buffer[i + 6] << 8) | buffer[i + 7];
-                memcpy(current_data_, &buffer[i + 8], 8);
+                {
+                    std::lock_guard<std::mutex> lock(frame_mutex_);
+                    current_dlc_ = buffer[i + 3];
+                    current_can_id_ = (buffer[i + 6] << 8) | buffer[i + 7];
+                    memcpy(current_data_, &buffer[i + 8], 8);
+                    frame_sequence_++;
+
+                    CanFrame frame{};
+                    frame.can_id = current_can_id_;
+                    memcpy(frame.data, current_data_, 8);
+                    frame.dlc = current_dlc_;
+                    frame.sequence = frame_sequence_;
+                    frame_queue_.push_back(frame);
+                    if (frame_queue_.size() > 256) {
+                        frame_queue_.pop_front();
+                    }
+                }
+                frame_cv_.notify_all();
                 
                 if (!silent_mode_) {
                     printf("   └── 收到: ");

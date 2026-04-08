@@ -9,7 +9,7 @@ CANopen 协议汇川伺服电机控制库。
 g++ -o servo_test servo_test.cpp inovance_servo.cpp hw_can_usb.cpp -lpthread -std=c++11
 
 # Python 模块
-python setup.py build_ext --inplace
+cd ino_motor/cpp_version && python setup.py build_ext --inplace && cd ../..
 ```
 
 ## 使用

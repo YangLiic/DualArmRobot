@@ -10,7 +10,10 @@
  **/
 #pragma once
 #include "hw_can_usb.h"
+#include <atomic>
 #include <iostream>
+#include <mutex>
+#include <thread>
 
 namespace pg
 {
@@ -38,17 +41,42 @@ enum class ControlWord : uint16_t {
 class InovanceServo : public CanInterfaceUsb
 {
 private:
+    struct CollisionProtectionConfig {
+        uint16_t torque_limit_permille = 1200;
+        uint16_t forward_torque_limit_permille = 0;
+        uint16_t reverse_torque_limit_permille = 0;
+        uint16_t trigger_torque_permille = 900;
+        double trigger_current_amp = 0.0;
+        int32_t trigger_position_deviation = 0;
+        int consecutive_samples = 3;
+        int poll_interval_ms = 20;
+        bool use_quick_stop = true;
+    };
+
     uint32_t node_id_;
+    uint32_t response_id_;
     bool motor_enabled_;
     OperationMode current_mode_;
     bool direction_inverted_;  // 方向反转标志
+    bool actual_torque_available_;
+    bool phase_current_available_;
+    bool position_deviation_available_;
+    std::mutex io_mutex_;
+    std::thread collision_thread_;
+    std::atomic<bool> collision_thread_running_;
+    std::atomic<bool> collision_protection_enabled_;
+    std::atomic<bool> collision_triggered_;
+    CollisionProtectionConfig collision_config_;
     
     void decode() override;
     
     // 内部辅助函数
     bool setOperationMode(OperationMode mode);
     bool sendControlWord(ControlWord cmd);
-    bool writeSDO(uint16_t index, uint8_t subindex, const uint8_t* data, size_t len);
+    bool writeSDO(uint16_t index, uint8_t subindex, const uint8_t* data, size_t len, bool wait_response = false);
+    bool readSDO(uint16_t index, uint8_t subindex, uint8_t* data, size_t len, int timeout_ms = 100, bool log_error = true);
+    void collisionProtectionLoop();
+    void stopCollisionProtectionThread();
     
 public:
     InovanceServo(const std::string& port_name, int baud_rate, uint32_t node_id = 0x601);
@@ -107,6 +135,64 @@ public:
      * @param rpm 转速，正值顺时针，负值逆时针
      */
     bool setVelocity(int32_t rpm);
+    
+    /**
+     * @brief 设置最大转矩限制（千分比，1000 = 1倍额定转矩）
+     */
+    bool setMaxTorqueLimit(uint16_t permille);
+    
+    /**
+     * @brief 分别设置正反向最大转矩限制（千分比）
+     */
+    bool setDirectionalTorqueLimits(uint16_t forward_permille, uint16_t reverse_permille);
+    
+    /**
+     * @brief 设置转矩斜坡（千分比每秒）
+     */
+    bool setTorqueRamp(uint32_t permille_per_second);
+    
+    /**
+     * @brief 读取实际转矩（千分比，1000 = 1倍额定转矩）
+     */
+    int16_t readActualTorquePermille();
+    
+    /**
+     * @brief 读取相电流有效值（安培）
+     */
+    double readPhaseCurrentAmp();
+    
+    /**
+     * @brief 读取平均负载率（百分比）
+     */
+    double readAverageLoadPercent();
+    
+    /**
+     * @brief 读取位置偏差
+     */
+    int32_t readPositionDeviation();
+    
+    /**
+     * @brief 启用碰撞保护。
+     *
+     * 使用“转矩限制 + 反馈监控 + 快速停机”策略。
+     */
+    bool enableCollisionProtection(
+        uint16_t torque_limit_permille = 1200,
+        uint16_t trigger_torque_permille = 900,
+        double trigger_current_amp = 0.0,
+        int32_t trigger_position_deviation = 0,
+        int consecutive_samples = 3,
+        int poll_interval_ms = 20,
+        bool use_quick_stop = true);
+    
+    /**
+     * @brief 禁用碰撞保护
+     */
+    void disableCollisionProtection();
+    
+    bool isCollisionProtectionEnabled() const { return collision_protection_enabled_; }
+    bool wasCollisionTriggered() const { return collision_triggered_; }
+    void clearCollisionTriggered() { collision_triggered_ = false; }
     
     // ==================== 位置控制 ====================
     
