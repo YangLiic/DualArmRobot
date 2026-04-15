@@ -1,6 +1,9 @@
-# DualArmControl - 双臂机器人电机控制上位机
+# DualArmControl - 双臂机器人控制上位机
 
-基于 Qt6 的汇川伺服电机统一控制上位机，支持单条 USB-CAN 总线下多节点同时在线管理。
+基于 Qt6 的双臂机器人统一控制上位机。当前在同一个 GUI 页面内同时包含两类能力：
+
+- 汇川伺服电机控制：单条 USB-CAN 总线下多节点在线管理
+- `HumanoidArms_SDK` 双臂机械臂控制：左右臂 7 关节滑块位置控制、状态读取、清错、刹车
 
 ---
 
@@ -8,9 +11,11 @@
 
 | 组件 | 说明 |
 |------|------|
-| USB-CAN 适配器 | CH340 串口转 CAN，17 字节帧协议 |
+| USB-CAN 适配器 | CH340 串口转 CAN，17 字节帧协议 / CANalyst-II |
 | 400W 电机 | 节点 ID `0x601`，SDO 响应 `0x581` |
 | 750W 电机 | 节点 ID `0x602`，SDO 响应 `0x582`，方向反转 |
+| HumanoidArms SDK | `../HumanoidArms/HumanoidArms_SDK` |
+| 双臂机械臂 | 左臂 7 关节 + 右臂 7 关节 |
 | 通信协议 | CANopen SDO（CiA 402 状态机） |
 | 串口波特率 | 默认 9600（适配器与主机之间） |
 
@@ -24,13 +29,13 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                        GUI 层 (ui/)                         │
 │  MainWindow / ConnectionPanel / MotorControlPanel           │
-│  StatusMonitorPanel / TorqueGaugeWidget / LogWidget         │
+│  HumanoidArmsPanel / StatusMonitorPanel / LogWidget         │
 ├─────────────────────────────────────────────────────────────┤
 │                     业务服务层 (services/)                    │
-│  MotorService - 使能/失能/速度/位置/碰撞保护/批量操作          │
+│  MotorService / ArmService                                  │
 ├─────────────────────────────────────────────────────────────┤
 │                     协议适配层 (protocols/)                   │
-│  CanopenMotorProtocol - SDO 报文编解码 / CiA 402 / OD 地址    │
+│  CanopenMotorProtocol / HumanoidArmsSdkAdapter             │
 ├─────────────────────────────────────────────────────────────┤
 │                     通信调度层 (communication/)               │
 │  CommunicationManager → CanBusWorker → FrameIO              │
@@ -57,25 +62,18 @@ dual_arm_control/
 │   └── common_types.h                      # 统一数据结构
 │       - Priority / OperationMode / CanFrame
 │       - CommRequest / CommResult
-│       - MotorState / CollisionConfig / BusConfig
+│       - MotorState / ArmState / CollisionConfig / BusConfig
 │       - LogLevel / LogEntry
 ├── communication/                          # 通信调度层
 │   ├── frame_io.h/cpp                      # USB-CAN 17字节帧协议收发
 │   ├── can_bus_worker.h/cpp                # 总线 worker (优先级队列/响应匹配)
 │   └── communication_manager.h/cpp         # 通信管理器 (线程/轮询/分发)
 ├── protocols/
-│   └── canopen_motor_protocol.h/cpp        # CANopen SDO 编解码
-│       - OD 地址常量 (6040/6060/60FF/607A/6077...)
-│       - 写 SDO / 读 SDO / NMT 命令
-│       - 使能/速度/位置/扭矩/抱闸等高层接口
-│       - 响应解析 (扭矩千分比/相电流/位置偏差)
+│   ├── canopen_motor_protocol.h/cpp        # CANopen SDO 编解码
+│   └── humanoid_arms_sdk_adapter.h/cpp     # HumanoidArms SDK 适配层
 ├── services/
-│   └── motor_service.h/cpp                 # 电机业务服务
-│       - 节点管理 (addNode/removeNode)
-│       - 控制指令 (enable/disable/velocity/position/emergencyStop)
-│       - 碰撞保护 (阈值检测/连续采样/自动急停)
-│       - 批量操作 (enableAll/disableAll/emergencyStopAll)
-│       - 轮询管理 (startMonitoring/stopMonitoring)
+│   ├── motor_service.h/cpp                 # 电机业务服务
+│   └── arm_service.h/cpp                   # 双臂机械臂业务服务
 └── ui/                                     # Qt GUI 层
     ├── main_window.h/cpp                   # 主窗口 - 组装所有面板 + signal/slot 连接
     ├── connection_panel.h/cpp              # 总线连接面板
@@ -92,9 +90,18 @@ dual_arm_control/
     │   - 圆弧仪表 (绿色安全区 / 红色危险区)
     │   - 实时指针 + 峰值标记
     │   - 碰撞触发闪红 + 状态 LED 指示灯
+    ├── humanoid_arms_panel.h/cpp           # 同页机械臂控制板块
+    │   - SDK 连接/断开
+    │   - 左右臂各 7 关节滑块位置控制
+    │   - 当前关节角 / 末端位姿 / 错误状态显示
+    │   - 清错 / 刹车 / 同步当前姿态
     └── log_widget.h/cpp                    # 系统日志面板
         - 彩色分级日志 (INFO/WARN/ERROR/CRIT)
         - 自动滚动 / 行数限制 / 一键清空
+├── third_party/                            # 本地头文件依赖
+│   ├── eigen3_pkg/
+│   └── boost_pkg/
+└── ncurses.h                               # SDK 头文件的本地 shim
 ```
 
 ---
@@ -106,12 +113,18 @@ dual_arm_control/
 - Qt6 (Widgets + Core + SerialPort)
 - CMake >= 3.16
 - GCC/G++ (C++17)
+- `HumanoidArms/HumanoidArms_SDK`
 
 Ubuntu/Debian 安装依赖：
 
 ```bash
 sudo apt install qt6-base-dev libqt6serialport6-dev cmake g++
 ```
+
+说明：
+
+- 机械臂 SDK 依赖的 `Eigen` / `Boost property_tree` 头文件已经放在仓库内的 `third_party/`，不要求系统额外安装开发包
+- 运行时会直接加载 `../HumanoidArms/HumanoidArms_SDK/usrlib/` 下的 `libHumanoidArms.so` 和 `libcontrolcan.so`
 
 ### 编译
 
@@ -125,8 +138,13 @@ make -j$(nproc)
 ### 运行
 
 ```bash
-sudo ./dual_arm_control （使用 CANalyst-II ，记得sudo）
+sudo ./dual_arm_control
 ```
+
+说明：
+
+- 使用 CANalyst-II 或 `HumanoidArms_SDK` 时，建议直接用 `sudo` 启动
+- 机械臂 SDK 的 `can_init()`/`Exit()` 由 GUI 内的 `HumanoidArms` 板块控制
 
 ---
 
@@ -182,6 +200,35 @@ sudo ./dual_arm_control （使用 CANalyst-II ，记得sudo）
 
 - 「全部使能」/ 「全部失能」/ 「全部急停」/ 「全部复位」
 - 对所有已注册节点同时生效
+
+### 7. HumanoidArms 机械臂板块
+
+主页面左侧新增了 `HumanoidArms` 控制板块，与原有电机控制在同一个页面内显示。
+
+使用流程：
+
+1. 在板块顶部设置 `deviceIndex` 和 `canIndex`
+2. 点击「连接 SDK」
+3. 点击「刷新状态」读取左右臂当前关节角、末端位姿和错误状态
+4. 如需避免误动作，可先点击「同步当前姿态」，将滑块目标同步到当前真实姿态
+5. 拖动左臂或右臂任一关节滑块，释放后会按整臂 7 关节目标调用 `moveJ_ToJoint(...)`
+6. 如有故障可点击「清错」，如需立即停车可点击「刹车」
+
+当前机械臂板块已接入的 SDK 能力：
+
+- `can_init()` / `Exit()`
+- `get_joint()`
+- `get_Pos()`
+- `get_mechanicalarm_status()`
+- `moveJ_ToJoint()`
+- `clear_elc_error()`
+- `brake()`
+
+说明：
+
+- 滑块当前先按 `±180°` 配置范围，后续可再按真实关节限位细化
+- GUI 显示使用角度 `deg`，内部下发前会自动转换为 SDK 所需的弧度 `rad`
+- 机械臂 SDK 当前是自管 CAN，不并入现有 `CommunicationManager`
 
 ---
 

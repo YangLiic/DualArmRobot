@@ -9,6 +9,34 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core SerialPort)
 
+set(HUMANOID_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../HumanoidArms/HumanoidArms_SDK")
+set(HUMANOID_SDK_INCLUDE_DIR "${HUMANOID_SDK_DIR}/include")
+set(HUMANOID_SDK_LIB_DIR "${HUMANOID_SDK_DIR}/usrlib")
+set(HUMANOID_SDK_LIB "${HUMANOID_SDK_LIB_DIR}/libHumanoidArms.so")
+set(HUMANOID_SDK_CONTROLCAN_LIB "${HUMANOID_SDK_LIB_DIR}/libcontrolcan.so")
+set(LOCAL_EIGEN3_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/eigen3_pkg")
+set(LOCAL_BOOST_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
+
+if(NOT EXISTS "${HUMANOID_SDK_LIB}")
+    message(FATAL_ERROR "HumanoidArms SDK not found: ${HUMANOID_SDK_LIB}")
+endif()
+
+if(EXISTS "${LOCAL_EIGEN3_INCLUDE_DIR}/Eigen/Dense")
+    set(EIGEN3_INCLUDE_HINT "${LOCAL_EIGEN3_INCLUDE_DIR}")
+else()
+    set(EIGEN3_INCLUDE_HINT "/usr/include/eigen3")
+endif()
+
+find_library(NCURSES_LIB
+    NAMES libncurses.so.6 ncurses ncursesw
+    PATHS /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
+    NO_DEFAULT_PATH
+)
+
+if(NOT NCURSES_LIB)
+    message(FATAL_ERROR "ncurses runtime library not found")
+endif()
+
 set(MODEL_SOURCES
     models/common_types.h
 )
@@ -29,11 +57,15 @@ set(COMMUNICATION_SOURCES
 set(PROTOCOL_SOURCES
     protocols/canopen_motor_protocol.h
     protocols/canopen_motor_protocol.cpp
+    protocols/humanoid_arms_sdk_adapter.h
+    protocols/humanoid_arms_sdk_adapter.cpp
 )
 
 set(SERVICE_SOURCES
     services/motor_service.h
     services/motor_service.cpp
+    services/arm_service.h
+    services/arm_service.cpp
 )
 
 set(UI_SOURCES
@@ -49,6 +81,8 @@ set(UI_SOURCES
     ui/torque_gauge_widget.cpp
     ui/log_widget.h
     ui/log_widget.cpp
+    ui/humanoid_arms_panel.h
+    ui/humanoid_arms_panel.cpp
 )
 
 add_executable(dual_arm_control
@@ -60,7 +94,19 @@ add_executable(dual_arm_control
     ${UI_SOURCES}
 )
 
-target_include_directories(dual_arm_control PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(dual_arm_control PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${HUMANOID_SDK_INCLUDE_DIR}
+    ${EIGEN3_INCLUDE_HINT}
+    ${LOCAL_BOOST_INCLUDE_DIR}
+)
+
+set_target_properties(dual_arm_control PROPERTIES
+    BUILD_RPATH "${HUMANOID_SDK_LIB_DIR}"
+    INSTALL_RPATH "${HUMANOID_SDK_LIB_DIR}"
+)
+
+target_link_options(dual_arm_control PRIVATE "-Wl,--no-as-needed")
 
 # libcontrolcan.so is now loaded dynamically via dlopen in VciCanAdapter
 # to prevent resource contention and startup crashes.
@@ -69,5 +115,8 @@ target_link_libraries(dual_arm_control PRIVATE
     Qt6::Widgets
     Qt6::Core
     Qt6::SerialPort
+    ${HUMANOID_SDK_LIB}
+    ${HUMANOID_SDK_CONTROLCAN_LIB}
+    ${NCURSES_LIB}
     ${CMAKE_DL_LIBS}
 )

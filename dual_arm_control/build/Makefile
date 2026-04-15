@@ -310,6 +310,54 @@ protocols/canopen_motor_protocol.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.s
 .PHONY : protocols/canopen_motor_protocol.cpp.s
 
+protocols/humanoid_arms_sdk_adapter.o: protocols/humanoid_arms_sdk_adapter.cpp.o
+.PHONY : protocols/humanoid_arms_sdk_adapter.o
+
+# target to build an object file
+protocols/humanoid_arms_sdk_adapter.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/protocols/humanoid_arms_sdk_adapter.cpp.o
+.PHONY : protocols/humanoid_arms_sdk_adapter.cpp.o
+
+protocols/humanoid_arms_sdk_adapter.i: protocols/humanoid_arms_sdk_adapter.cpp.i
+.PHONY : protocols/humanoid_arms_sdk_adapter.i
+
+# target to preprocess a source file
+protocols/humanoid_arms_sdk_adapter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/protocols/humanoid_arms_sdk_adapter.cpp.i
+.PHONY : protocols/humanoid_arms_sdk_adapter.cpp.i
+
+protocols/humanoid_arms_sdk_adapter.s: protocols/humanoid_arms_sdk_adapter.cpp.s
+.PHONY : protocols/humanoid_arms_sdk_adapter.s
+
+# target to generate assembly for a file
+protocols/humanoid_arms_sdk_adapter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/protocols/humanoid_arms_sdk_adapter.cpp.s
+.PHONY : protocols/humanoid_arms_sdk_adapter.cpp.s
+
+services/arm_service.o: services/arm_service.cpp.o
+.PHONY : services/arm_service.o
+
+# target to build an object file
+services/arm_service.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/services/arm_service.cpp.o
+.PHONY : services/arm_service.cpp.o
+
+services/arm_service.i: services/arm_service.cpp.i
+.PHONY : services/arm_service.i
+
+# target to preprocess a source file
+services/arm_service.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/services/arm_service.cpp.i
+.PHONY : services/arm_service.cpp.i
+
+services/arm_service.s: services/arm_service.cpp.s
+.PHONY : services/arm_service.s
+
+# target to generate assembly for a file
+services/arm_service.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/services/arm_service.cpp.s
+.PHONY : services/arm_service.cpp.s
+
 services/motor_service.o: services/motor_service.cpp.o
 .PHONY : services/motor_service.o
 
@@ -357,6 +405,30 @@ ui/connection_panel.s: ui/connection_panel.cpp.s
 ui/connection_panel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.s
 .PHONY : ui/connection_panel.cpp.s
+
+ui/humanoid_arms_panel.o: ui/humanoid_arms_panel.cpp.o
+.PHONY : ui/humanoid_arms_panel.o
+
+# target to build an object file
+ui/humanoid_arms_panel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/ui/humanoid_arms_panel.cpp.o
+.PHONY : ui/humanoid_arms_panel.cpp.o
+
+ui/humanoid_arms_panel.i: ui/humanoid_arms_panel.cpp.i
+.PHONY : ui/humanoid_arms_panel.i
+
+# target to preprocess a source file
+ui/humanoid_arms_panel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/ui/humanoid_arms_panel.cpp.i
+.PHONY : ui/humanoid_arms_panel.cpp.i
+
+ui/humanoid_arms_panel.s: ui/humanoid_arms_panel.cpp.s
+.PHONY : ui/humanoid_arms_panel.s
+
+# target to generate assembly for a file
+ui/humanoid_arms_panel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/ui/humanoid_arms_panel.cpp.s
+.PHONY : ui/humanoid_arms_panel.cpp.s
 
 ui/log_widget.o: ui/log_widget.cpp.o
 .PHONY : ui/log_widget.o
@@ -509,12 +581,21 @@ help:
 	@echo "... protocols/canopen_motor_protocol.o"
 	@echo "... protocols/canopen_motor_protocol.i"
 	@echo "... protocols/canopen_motor_protocol.s"
+	@echo "... protocols/humanoid_arms_sdk_adapter.o"
+	@echo "... protocols/humanoid_arms_sdk_adapter.i"
+	@echo "... protocols/humanoid_arms_sdk_adapter.s"
+	@echo "... services/arm_service.o"
+	@echo "... services/arm_service.i"
+	@echo "... services/arm_service.s"
 	@echo "... services/motor_service.o"
 	@echo "... services/motor_service.i"
 	@echo "... services/motor_service.s"
 	@echo "... ui/connection_panel.o"
 	@echo "... ui/connection_panel.i"
 	@echo "... ui/connection_panel.s"
+	@echo "... ui/humanoid_arms_panel.o"
+	@echo "... ui/humanoid_arms_panel.i"
+	@echo "... ui/humanoid_arms_panel.s"
 	@echo "... ui/log_widget.o"
 	@echo "... ui/log_widget.i"
 	@echo "... ui/log_widget.s"

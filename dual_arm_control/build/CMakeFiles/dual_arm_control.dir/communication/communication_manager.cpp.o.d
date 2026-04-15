@@ -296,6 +296,10 @@ CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QMetaType \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qmetatype.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QVector \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qvector.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \

@@ -1,6 +1,8 @@
 #pragma once
 #include <QString>
 #include <QDateTime>
+#include <QMetaType>
+#include <QVector>
 #include <cstdint>
 
 namespace dac {
@@ -126,4 +128,34 @@ inline QString logLevelText(LogLevel l) {
     return {};
 }
 
+// ==================== 双臂机械臂 ====================
+enum class ArmSide : uint8_t {
+    Left = 0,
+    Right = 1
+};
+
+inline QString armSideText(ArmSide side) {
+    switch (side) {
+    case ArmSide::Left:  return QStringLiteral("左臂");
+    case ArmSide::Right: return QStringLiteral("右臂");
+    }
+    return QStringLiteral("未知");
+}
+
+struct ArmState {
+    ArmSide side = ArmSide::Left;
+    bool    initialized = false;
+    bool    online = false;
+
+    QVector<double> jointPositionsRad;  // 7关节，单位 rad
+    QVector<double> tcpPose;            // [x, y, z, rx, ry, rz]
+    QVector<int32_t> errorCodes;        // 7关节错误字
+    QString errorSummary;
+
+    QDateTime lastUpdateTime;
+};
+
 } // namespace dac
+
+Q_DECLARE_METATYPE(dac::ArmSide)
+Q_DECLARE_METATYPE(dac::ArmState)

@@ -4,8 +4,10 @@
   /home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.h \
   /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
   /home/yang/DualArmRobot/dual_arm_control/models/common_types.h \
+  /home/yang/DualArmRobot/dual_arm_control/services/arm_service.h \
   /home/yang/DualArmRobot/dual_arm_control/services/motor_service.h \
   /home/yang/DualArmRobot/dual_arm_control/ui/connection_panel.h \
+  /home/yang/DualArmRobot/dual_arm_control/ui/humanoid_arms_panel.h \
   /home/yang/DualArmRobot/dual_arm_control/ui/log_widget.h \
   /home/yang/DualArmRobot/dual_arm_control/ui/motor_control_panel.h \
   /home/yang/DualArmRobot/dual_arm_control/ui/status_monitor_panel.h \
@@ -293,12 +295,14 @@
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QDateTime \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QDeadlineTimer \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QMap \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMetaType \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QMutex \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QQueue \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QThread \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVector \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QWaitCondition \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
@@ -391,6 +395,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qutf8stringview.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qvariant.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qvarlengtharray.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/qvector.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qwaitcondition.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \

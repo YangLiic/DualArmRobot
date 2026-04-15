@@ -300,6 +300,10 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QMetaType \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qmetatype.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QVector \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qvector.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
  /usr/include/c++/11/bits/deque.tcc \
@@ -330,6 +334,12 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/c++/11/bits/std_thread.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMap \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qmap.h \
+ /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/QEXRLBDUJQ/moc_humanoid_arms_sdk_adapter.cpp \
+ /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/QEXRLBDUJQ/../../../protocols/humanoid_arms_sdk_adapter.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QList \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qlist.h \
+ /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/3BYFHCGL5U/moc_arm_service.cpp \
+ /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/3BYFHCGL5U/../../../services/arm_service.h \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/3BYFHCGL5U/moc_motor_service.cpp \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/3BYFHCGL5U/../../../services/motor_service.h \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/UYX5XTB5RZ/moc_connection_panel.cpp \
@@ -399,6 +409,8 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextoption.h \
+ /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/UYX5XTB5RZ/moc_humanoid_arms_panel.cpp \
+ /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/UYX5XTB5RZ/../../../ui/humanoid_arms_panel.h \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/UYX5XTB5RZ/moc_log_widget.cpp \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/UYX5XTB5RZ/../../../ui/log_widget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \

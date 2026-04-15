@@ -328,6 +328,10 @@ CMakeFiles/dual_arm_control.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDateTime \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdatetime.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QMetaType \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qmetatype.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QVector \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qvector.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
@@ -359,6 +363,7 @@ CMakeFiles/dual_arm_control.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMap \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qmap.h \
  /home/yang/DualArmRobot/dual_arm_control/services/motor_service.h \
+ /home/yang/DualArmRobot/dual_arm_control/services/arm_service.h \
  /home/yang/DualArmRobot/dual_arm_control/ui/connection_panel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
@@ -409,6 +414,7 @@ CMakeFiles/dual_arm_control.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
+ /home/yang/DualArmRobot/dual_arm_control/ui/humanoid_arms_panel.h \
  /home/yang/DualArmRobot/dual_arm_control/ui/status_monitor_panel.h \
  /home/yang/DualArmRobot/dual_arm_control/ui/torque_gauge_widget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QColor \

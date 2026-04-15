@@ -2,6 +2,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
+#include <QFrame>
+#include <QScrollArea>
 #include <QApplication>
 #include <QMessageBox>
 
@@ -11,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     commManager_ = new CommunicationManager(this);
     motorService_ = new MotorService(commManager_, this);
+    armService_ = new ArmService(this);
 
     setupUi();
     setupConnections();
@@ -39,12 +42,21 @@ void MainWindow::setupUi()
     // 中部：水平分割 - 左侧控制 + 右侧监控
     auto *splitter = new QSplitter(Qt::Horizontal);
 
-    // 左侧：电机控制
+    // 左侧：电机控制 + 机械臂控制（滚动区）
     motorControlPanel_ = new MotorControlPanel;
-    auto *leftScroll = new QWidget;
-    auto *leftLayout = new QVBoxLayout(leftScroll);
+    humanoidArmsPanel_ = new HumanoidArmsPanel;
+
+    auto *leftContainer = new QWidget;
+    auto *leftLayout = new QVBoxLayout(leftContainer);
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->addWidget(motorControlPanel_);
+    leftLayout->addWidget(humanoidArmsPanel_);
+    leftLayout->addStretch();
+
+    auto *leftScroll = new QScrollArea;
+    leftScroll->setWidgetResizable(true);
+    leftScroll->setFrameShape(QFrame::NoFrame);
+    leftScroll->setWidget(leftContainer);
     splitter->addWidget(leftScroll);
 
     // 右侧：TAB（状态监控 + 日志）
@@ -59,7 +71,7 @@ void MainWindow::setupUi()
     splitter->addWidget(tabWidget_);
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 2);
-    splitter->setSizes({380, 900});
+    splitter->setSizes({460, 860});
 
     mainLayout->addWidget(splitter, 1);
     setCentralWidget(central);
@@ -127,6 +139,17 @@ void MainWindow::setupConnections()
     // ====== MotorService → 控制面板状态 ======
     connect(motorService_, &MotorService::motorStateChanged, motorControlPanel_, &MotorControlPanel::updateMotorState);
 
+    // ====== 机械臂控制面板 → ArmService ======
+    connect(humanoidArmsPanel_, &HumanoidArmsPanel::connectRequested, armService_, &ArmService::initializeSdk);
+    connect(humanoidArmsPanel_, &HumanoidArmsPanel::disconnectRequested, armService_, &ArmService::shutdownSdk);
+    connect(humanoidArmsPanel_, &HumanoidArmsPanel::refreshRequested, armService_, &ArmService::refreshAllStates);
+    connect(humanoidArmsPanel_, &HumanoidArmsPanel::jointTargetsRequested, armService_, &ArmService::moveJointTargets);
+    connect(humanoidArmsPanel_, &HumanoidArmsPanel::brakeRequested, armService_, &ArmService::brakeArm);
+    connect(humanoidArmsPanel_, &HumanoidArmsPanel::clearErrorsRequested, armService_, &ArmService::clearErrors);
+
+    connect(armService_, &ArmService::initializationChanged, humanoidArmsPanel_, &HumanoidArmsPanel::setConnectionState);
+    connect(armService_, &ArmService::armStateChanged, humanoidArmsPanel_, &HumanoidArmsPanel::updateArmState);
+
     // ====== 碰撞触发弹窗（非阻塞，急停已在 MotorService 中先行完成） ======
     connect(motorService_, &MotorService::collisionDetected, this, [this](uint32_t nodeId, int16_t torque) {
         auto *msgBox = new QMessageBox(QMessageBox::Warning,
@@ -144,6 +167,7 @@ void MainWindow::setupConnections()
     // ====== 日志 ======
     connect(commManager_, &CommunicationManager::logMessage, logWidget_, &LogWidget::appendLog);
     connect(motorService_, &MotorService::logMessage, logWidget_, &LogWidget::appendLog);
+    connect(armService_, &ArmService::logMessage, logWidget_, &LogWidget::appendLog);
 }
 
 void MainWindow::initMotorNodes()
@@ -211,6 +235,23 @@ void MainWindow::applyGlobalStyle()
             border: 1px solid #45475a;
             border-radius: 4px;
             padding: 4px 8px;
+        }
+        QSlider::groove:horizontal {
+            border: 1px solid #45475a;
+            height: 6px;
+            background: #313244;
+            border-radius: 3px;
+        }
+        QSlider::handle:horizontal {
+            background: #89b4fa;
+            border: 1px solid #74c7ec;
+            width: 14px;
+            margin: -5px 0;
+            border-radius: 7px;
+        }
+        QSlider::sub-page:horizontal {
+            background: #74c7ec;
+            border-radius: 3px;
         }
         QPushButton {
             background: #45475a;

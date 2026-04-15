@@ -406,6 +406,18 @@
 			null
 		],
 		[
+			"/home/yang/DualArmRobot/dual_arm_control/protocols/humanoid_arms_sdk_adapter.h",
+			"MU",
+			"QEXRLBDUJQ/moc_humanoid_arms_sdk_adapter.cpp",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/services/arm_service.h",
+			"MU",
+			"3BYFHCGL5U/moc_arm_service.cpp",
+			null
+		],
+		[
 			"/home/yang/DualArmRobot/dual_arm_control/services/motor_service.h",
 			"MU",
 			"3BYFHCGL5U/moc_motor_service.cpp",
@@ -415,6 +427,12 @@
 			"/home/yang/DualArmRobot/dual_arm_control/ui/connection_panel.h",
 			"MU",
 			"UYX5XTB5RZ/moc_connection_panel.cpp",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/ui/humanoid_arms_panel.h",
+			"MU",
+			"UYX5XTB5RZ/moc_humanoid_arms_panel.cpp",
 			null
 		],
 		[
@@ -462,6 +480,9 @@
 	"MOC_INCLUDES" : 
 	[
 		"/home/yang/DualArmRobot/dual_arm_control",
+		"/home/yang/DualArmRobot/HumanoidArms/HumanoidArms_SDK/include",
+		"/home/yang/DualArmRobot/dual_arm_control/third_party/eigen3_pkg",
+		"/home/yang/DualArmRobot/dual_arm_control/third_party",
 		"/usr/include/x86_64-linux-gnu/qt6/QtWidgets",
 		"/usr/include/x86_64-linux-gnu/qt6",
 		"/usr/include/x86_64-linux-gnu/qt6/QtCore",
@@ -527,12 +548,27 @@
 			null
 		],
 		[
+			"/home/yang/DualArmRobot/dual_arm_control/protocols/humanoid_arms_sdk_adapter.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/services/arm_service.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/yang/DualArmRobot/dual_arm_control/services/motor_service.cpp",
 			"MU",
 			null
 		],
 		[
 			"/home/yang/DualArmRobot/dual_arm_control/ui/connection_panel.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/ui/humanoid_arms_panel.cpp",
 			"MU",
 			null
 		],
