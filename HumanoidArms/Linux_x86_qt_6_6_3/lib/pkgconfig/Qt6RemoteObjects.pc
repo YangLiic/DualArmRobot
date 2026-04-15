@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 RemoteObjects
+Description: Qt RemoteObjects module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6RemoteObjects
+Cflags: -I${includedir}/QtRemoteObjects -I${includedir} -DQT_REMOTEOBJECTS_LIB

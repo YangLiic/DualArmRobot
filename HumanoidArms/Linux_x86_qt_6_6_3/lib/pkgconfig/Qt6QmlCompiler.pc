@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 QmlCompiler
+Description: Qt QmlCompiler module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6QmlCompiler
+Cflags: -I${includedir}/QtQmlCompiler -I${includedir} -DQT_QMLCOMPILER_LIB

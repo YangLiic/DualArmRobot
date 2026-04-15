@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 Multimedia
+Description: Qt Multimedia module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6Multimedia
+Cflags: -I${includedir}/QtMultimedia -I${includedir} -DQT_MULTIMEDIA_LIB

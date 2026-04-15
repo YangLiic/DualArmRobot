@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 PositioningQuick
+Description: Qt PositioningQuick module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6PositioningQuick
+Cflags: -I${includedir}/QtPositioningQuick -I${includedir} -DQT_POSITIONINGQUICK_LIB

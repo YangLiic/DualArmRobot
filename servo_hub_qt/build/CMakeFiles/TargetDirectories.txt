@@ -1,4 +1,0 @@
-/home/yang/DualArmRobot/servo_hub_qt/build/CMakeFiles/servo_hub_qt.dir
-/home/yang/DualArmRobot/servo_hub_qt/build/CMakeFiles/edit_cache.dir
-/home/yang/DualArmRobot/servo_hub_qt/build/CMakeFiles/rebuild_cache.dir
-/home/yang/DualArmRobot/servo_hub_qt/build/CMakeFiles/servo_hub_qt_autogen.dir

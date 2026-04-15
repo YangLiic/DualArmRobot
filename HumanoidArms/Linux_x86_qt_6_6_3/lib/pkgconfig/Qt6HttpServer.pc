@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 HttpServer
+Description: Qt HttpServer module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6HttpServer
+Cflags: -I${includedir}/QtHttpServer -I${includedir} -DQT_HTTPSERVER_LIB

@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 3DQuickAnimation
+Description: Qt 3DQuickAnimation module
+Version: 6.6.3
+Libs: -L${libdir} -lQt63DQuickAnimation
+Cflags: -I${includedir}/Qt3DQuickAnimation -I${includedir} -DQT_3DQUICKANIMATION_LIB

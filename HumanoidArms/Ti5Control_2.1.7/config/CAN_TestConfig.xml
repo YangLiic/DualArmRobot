@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestConfiguration>
+    <Protocol>
+        <Type>CAN</Type>
+        <Name>CAN_Motor_Test</Name>
+        <Parameters>
+            <Parameter name="deviceIndex">0</Parameter>
+            <Parameter name="canIndex">0</Parameter>
+            <Parameter name="baudRate">1000000</Parameter>
+            <Parameter name="canId">1</Parameter>
+        </Parameters>
+    </Protocol>
+    
+    <GlobalParameters>
+        <Parameter name="timeout">5000</Parameter>
+        <Parameter name="retryCount">3</Parameter>
+        <Parameter name="motorId">1</Parameter>
+    </GlobalParameters>
+    
+    <TestItems>
+        <TestItem>
+            <id>4</id>
+            <item>版本检查</item>
+            <SubTest>
+                <id>4</id>
+                <subId>1</subId>
+                <description>硬件版本检查</description>
+                <standard>01010C01</standard>
+            </SubTest>
+            <SubTest>
+                <id>4</id>
+                <subId>2</subId>
+                <description>软件版本检查</description>
+                <standard>01080507</standard>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>5</id>
+            <item>硬件配置检查</item>
+            <SubTest>
+                <id>5</id>
+                <subId>1</subId>
+                <description>极对数、减速比、采样电阻检查</description>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>6</id>
+            <item>电流环检测</item>
+            <SubTest>
+                <id>6</id>
+                <subId>1</subId>
+                <description>启动电流检测</description>
+            </SubTest>
+            <SubTest>
+                <id>6</id>
+                <subId>2</subId>
+                <description>运行电流检测</description>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>7</id>
+            <item>速度环检测</item>
+            <SubTest>
+                <id>7</id>
+                <subId>1</subId>
+                <description>速度控制精度检测</description>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>8</id>
+            <item>位置环检测</item>
+            <SubTest>
+                <id>8</id>
+                <subId>1</subId>
+                <description>位置控制精度检测</description>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>9</id>
+            <item>温度检测</item>
+            <SubTest>
+                <id>9</id>
+                <subId>1</subId>
+                <description>高速运行温度检测</description>
+            </SubTest>
+            <SubTest>
+                <id>9</id>
+                <subId>2</subId>
+                <description>位置运行温度检测</description>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>10</id>
+            <item>电池电压检测</item>
+            <SubTest>
+                <id>10</id>
+                <subId>1</subId>
+                <description>断电位置保持检测</description>
+            </SubTest>
+        </TestItem>
+        
+        <TestItem>
+            <id>11</id>
+            <item>参数保存检测</item>
+            <SubTest>
+                <id>11</id>
+                <subId>1</subId>
+                <description>参数保存功能检测</description>
+            </SubTest>
+        </TestItem>
+    </TestItems>
+</TestConfiguration>

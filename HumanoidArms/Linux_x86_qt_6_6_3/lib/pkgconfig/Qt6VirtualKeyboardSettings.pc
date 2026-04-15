@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 VirtualKeyboardSettings
+Description: Qt VirtualKeyboardSettings module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6VirtualKeyboardSettings
+Cflags: -I${includedir}/QtVirtualKeyboardSettings -I${includedir} -DQT_VIRTUALKEYBOARDSETTINGS_LIB

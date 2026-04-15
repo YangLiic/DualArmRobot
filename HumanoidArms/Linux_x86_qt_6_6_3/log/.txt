@@ -1,0 +1,5 @@
+Info:[0716][CanDeviceMng]clear all devices File:  Line:0  Function:  DT:
+Info:[0716][CanDeviceMng]clear all devices File:  Line:0  Function:  DT:
+Info:[0716][CanDeviceMng]clear all devices File:  Line:0  Function:  DT:
+Info:[0716][CanDeviceMng]clear all devices File:  Line:0  Function:  DT:
+Info:[0716][CanDeviceMng]clear all devices File:  Line:0  Function:  DT:

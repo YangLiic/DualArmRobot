@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 Location
+Description: Qt Location module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6Location
+Cflags: -I${includedir}/QtLocation -I${includedir} -DQT_LOCATION_LIB

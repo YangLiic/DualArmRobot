@@ -1,0 +1,6 @@
+Warning:qrc:/qml/dialogs/arm/DialogDemo.qml:89:5: QML Connections: Detected function "onAddPointsig" in Connections element. This is probably intended to be a signal handler but no signal of the target matches the name. File:qrc:/qml/dialogs/arm/DialogDemo.qml  Line:89  Function:  DT:11:25:21
+Warning:qrc:/qml/dialogs/arm/DialogDemo.qml:89:5: QML Connections: Detected function "onAddJawsig" in Connections element. This is probably intended to be a signal handler but no signal of the target matches the name. File:qrc:/qml/dialogs/arm/DialogDemo.qml  Line:89  Function:  DT:11:25:21
+Warning:MotorController codeAndSendMsg failed: Connection manager is null. Please ensure connection is established first. File:..\..\src\controller\MotorController.cpp  Line:329  Function:ErrCode MotorController::codeAndSendMsg(ControlMsgStru&)  DT:11:25:23
+Warning:qrc:/qml/dialogs/arm/DialogDemo.qml:90: ReferenceError: pagearm is not defined File:qrc:/qml/dialogs/arm/DialogDemo.qml  Line:90  Function:  DT:11:25:23
+Warning:qrc:/qml/contents/ContentPage.qml:92: ReferenceError: pagearm is not defined File:qrc:/qml/contents/ContentPage.qml  Line:92  Function:  DT:11:25:23
+Info:[0716][CanDeviceMng]clear all devices File:..\..\src\api\../conn/CanDeviceMng.h  Line:34  Function:void CanDeviceMng::releaseAllCanDevices()  DT:11:25:38

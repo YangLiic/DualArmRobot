@@ -1,0 +1,38 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/dual_arm_control_autogen.dir/AutogenUsed.txt"
+  "CMakeFiles/dual_arm_control_autogen.dir/ParseCache.txt"
+  "dual_arm_control_autogen"
+  "CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/main.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/main.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o.d"
+  "CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o"
+  "CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o.d"
+  "dual_arm_control"
+  "dual_arm_control.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/dual_arm_control.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

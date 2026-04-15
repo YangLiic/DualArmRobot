@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestConfiguration>
+    <Protocol>
+        <Type>EC</Type>
+        <Name>EtherCAT_Motor_Test</Name>
+        <Parameters>
+            <Parameter name="deviceIndex">0</Parameter>
+            <Parameter name="slaveId">1</Parameter>
+            <Parameter name="cycleTime">1000</Parameter>
+            <Parameter name="syncMode">DC</Parameter>
+        </Parameters>
+    </Protocol>
+    
+    <GlobalParameters>
+        <Parameter name="timeout">5000</Parameter>
+        <Parameter name="retryCount">3</Parameter>
+        <Parameter name="motorId">1</Parameter>
+    </GlobalParameters>
+    
+    <TestItems>
+        <TestItem>
+         <id>4</id>
+        <item>版本确认</item>
+        <SubTest>
+            <id>4</id>
+            <subId>1</subId>
+            <description>1. 硬件版本</description>
+            <standard>01010b06</standard>            
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+        <SubTest>
+            <id>4</id>
+            <subId>2</subId>
+            <description>2. 软件版本</description>
+            <standard>01020002</standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+    </TestItem>
+    <TestItem>
+        <id>6</id>
+        <item>电流检测</item>
+        <SubTest>
+            <id>6</id>
+            <subId>1</subId>
+            <description>1. 最小启动电流值（电流模式）</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+        <SubTest>
+            <id>6</id>
+            <subId>2</subId>
+            <description>2. 速度1000记录电流值</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+    </TestItem>
+    <TestItem>
+        <id>7</id>
+        <item>速度环检测</item>
+        <SubTest>
+            <id>7</id>
+            <subId>1</subId>
+            <description>1. 输入额定转速，运行顺畅无卡顿异响</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+    </TestItem>
+    <TestItem>
+        <id>8</id>
+        <item>位置环检测</item>
+        <SubTest>
+            <id>8</id>
+            <subId>1</subId>
+            <description>1. 执行器可以移动到设定位置</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+    </TestItem>
+    <TestItem>
+        <id>9</id>
+        <item>温度检测</item>
+        <SubTest>
+            <id>9</id>
+            <subId>1</subId>
+            <description>1. 速度环保持温度</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+        <SubTest>
+            <id>9</id>
+            <subId>2</subId>
+            <description>2. 位置环保持温度</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+    </TestItem>
+    <TestItem>
+        <id>11</id>
+        <item>参数保存检测</item>
+        <SubTest>
+            <id>11</id>
+            <subId>1</subId>
+            <description>1. 确认保存参数正常</description>
+            <standard></standard>
+            <log></log>
+            <result></result>
+            <startTime></startTime>
+            <stopTime></stopTime>
+        </SubTest>
+    </TestItem>
+    </TestItems>
+</TestConfiguration>

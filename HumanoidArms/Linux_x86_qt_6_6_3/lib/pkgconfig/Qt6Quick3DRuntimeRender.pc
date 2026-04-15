@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 Quick3DRuntimeRender
+Description: Qt Quick3DRuntimeRender module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6Quick3DRuntimeRender
+Cflags: -I${includedir}/QtQuick3DRuntimeRender -I${includedir} -DQT_QUICK3DRUNTIMERENDER_LIB

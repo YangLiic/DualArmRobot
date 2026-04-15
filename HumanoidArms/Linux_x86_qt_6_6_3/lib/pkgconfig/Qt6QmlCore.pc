@@ -1,0 +1,12 @@
+prefix=/opt/qt6.6.3
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libexecdir=${prefix}/./libexec
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Qt6 QmlCore
+Description: Qt QmlCore module
+Version: 6.6.3
+Libs: -L${libdir} -lQt6QmlCore
+Cflags: -I${includedir}/QtQmlCore -I${includedir} -DQT_QMLCORE_LIB

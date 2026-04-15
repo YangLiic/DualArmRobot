@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+ <action name="正常正弦测试">
+  <repeat>1000</repeat>、
+ <command>SET RUNMODE: OBJECT="ALL", RUNMODE="STOP", StayTime=1000;</command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FEED_GAIN", FeedGain=0, StayTime=100;  </command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FILTER_TIME", FilterTime=0, StayTime=100;  </command>
+  <command>SET SUSPENDTIME: OBJECT="ALL", PARATYPE="BY_TIME", StayTime=1000;</command>
+  <command>STR RUNMODETASK: OBJECT="ALL", RUNMODE="FEEDFORWARD_POS", AMPLITUDE=10000, CYCLE=5, Interval=5, StayTime=2000000; </command>
+ </action>
+ <action name="内部前馈正弦测试">
+  <repeat>1000</repeat>
+  <command>SET RUNMODE: OBJECT="ALL", RUNMODE="STOP", StayTime=1000;</command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FEED_GAIN", FeedGain=900, StayTime=100;  </command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FILTER_TIME", FilterTime=900, StayTime=100;  </command>
+  <command>SET SUSPENDTIME: OBJECT="ALL", PARATYPE="BY_TIME", StayTime=1000;</command>
+  <command>STR RUNMODETASK: OBJECT="ALL", RUNMODE="FEEDFORWARD_POS", AMPLITUDE=10000, CYCLE=5, Interval=5, StayTime=2000000; </command>
+ </action>
+ <action name="关闭内部前馈">
+  <repeat>1</repeat>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FEED_GAIN", FeedGain=0, StayTime=1000;  </command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FILTER_TIME", FilterTime=0, StayTime=1000;  </command>
+ </action>
+ <action name="转到0位置">
+  <repeat>1</repeat>
+  <command>SET RUNMODE: OBJECT="ALL", RUNMODE="STOP", StayTime=1000;</command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FEED_GAIN", FeedGain=0, StayTime=100;  </command>
+  <command>SET SPEEDPARA: OBJECT="ALL", PARATYPE="FILTER_TIME", FilterTime=0, StayTime=100;  </command>
+  <command>SET SUSPENDTIME: OBJECT="ALL", PARATYPE="BY_TIME", StayTime=1000;</command>
+  <command>SET RUNMODE: OBJECT="ALL", RUNMODE="POSITION", POSITION=0, StayTime=10000; </command>
+ </action>
+</root>
