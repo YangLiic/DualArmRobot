@@ -5,6 +5,15 @@
 
 namespace dac {
 
+namespace {
+
+bool isOperationEnabledStatusWord(uint16_t statusWord)
+{
+    return (statusWord & 0x006F) == 0x0027;
+}
+
+} // namespace
+
 MotorService::MotorService(CommunicationManager *comm, QObject *parent)
     : QObject(parent), comm_(comm)
 {}
@@ -55,7 +64,17 @@ void MotorService::sendCommand(uint32_t nodeId, const CommRequest &req,
         emit logMessage(LogLevel::Error, QStringLiteral("总线未打开，无法发送命令"));
         return;
     }
-    comm_->submitRequest(req, callback);
+    comm_->submitRequest(req, [this, nodeId, req, callback](const CommResult &result) {
+        if (!result.success && req.priority != Priority::Monitoring) {
+            emit logMessage(LogLevel::Error,
+                            QStringLiteral("节点 0x%1 命令失败: %2")
+                                .arg(nodeId, 3, 16, QChar('0'))
+                                .arg(result.errorMessage));
+        }
+        if (callback) {
+            callback(result);
+        }
+    });
 }
 
 // ==================== 控制指令 ====================
@@ -78,34 +97,101 @@ void MotorService::enableMotor(uint32_t nodeId, OperationMode mode)
     emit logMessage(LogLevel::Info, QStringLiteral("使能电机 0x%1 [%2]")
                         .arg(nodeId, 3, 16, QChar('0')).arg(operationModeText(mode)));
 
-    // 设置运行模式
-    sendCommand(nodeId, CanopenMotorProtocol::setOperationMode(nodeId, mode));
-
-    // CiA 402 状态机: Shutdown -> SwitchOn -> Enable
-    QTimer::singleShot(50, this, [=]() {
-        sendCommand(nodeId, CanopenMotorProtocol::sendControlWord(nodeId, 0x0006));
-    });
-    QTimer::singleShot(150, this, [=]() {
-        sendCommand(nodeId, CanopenMotorProtocol::sendControlWord(nodeId, 0x0007));
-    });
-    QTimer::singleShot(250, this, [=]() {
-        sendCommand(nodeId, CanopenMotorProtocol::sendControlWord(nodeId, 0x000F));
-    });
-    QTimer::singleShot(350, this, [=]() {
-        sendCommand(nodeId, CanopenMotorProtocol::nmtStart(nodeId));
-    });
-    QTimer::singleShot(400, this, [this, nodeId, mode]() {
-        auto it2 = nodes_.find(nodeId);
-        if (it2 != nodes_.end()) {
-            it2->state.enabled = true;
-            it2->state.online = true;
-            it2->state.mode = mode;
-            it2->state.lastUpdateTime = QDateTime::currentDateTime();
-            emit motorEnabled(nodeId, true);
-            emit motorStateChanged(nodeId, it2->state);
-            emit logMessage(LogLevel::Info, QStringLiteral("电机 0x%1 使能完成")
-                                .arg(nodeId, 3, 16, QChar('0')));
+    auto failEnable = [this, nodeId](const QString &step, const QString &detail) {
+        auto itFail = nodes_.find(nodeId);
+        if (itFail != nodes_.end()) {
+            itFail->state.enabled = false;
+            itFail->state.online = false;
+            itFail->state.lastUpdateTime = QDateTime::currentDateTime();
+            emit motorStateChanged(nodeId, itFail->state);
         }
+        emit logMessage(LogLevel::Error,
+                        QStringLiteral("电机 0x%1 使能失败 [%2]: %3")
+                            .arg(nodeId, 3, 16, QChar('0'))
+                            .arg(step)
+                            .arg(detail));
+        emit motorEnabled(nodeId, false);
+    };
+
+    // CiA 402 状态机: Mode -> Shutdown -> SwitchOn -> Enable -> Read StatusWord
+    sendCommand(nodeId, CanopenMotorProtocol::setOperationMode(nodeId, mode),
+                [this, nodeId, mode, failEnable](const CommResult &modeResult) {
+        if (!modeResult.success) {
+            failEnable(QStringLiteral("模式设置"), modeResult.errorMessage);
+            return;
+        }
+
+        QTimer::singleShot(50, this, [this, nodeId, mode, failEnable]() {
+            sendCommand(nodeId, CanopenMotorProtocol::sendControlWord(nodeId, 0x0006),
+                        [this, nodeId, mode, failEnable](const CommResult &shutdownResult) {
+                if (!shutdownResult.success) {
+                    failEnable(QStringLiteral("Shutdown(0x0006)"), shutdownResult.errorMessage);
+                    return;
+                }
+
+                QTimer::singleShot(50, this, [this, nodeId, mode, failEnable]() {
+                    sendCommand(nodeId, CanopenMotorProtocol::sendControlWord(nodeId, 0x0007),
+                                [this, nodeId, mode, failEnable](const CommResult &switchOnResult) {
+                        if (!switchOnResult.success) {
+                            failEnable(QStringLiteral("SwitchOn(0x0007)"), switchOnResult.errorMessage);
+                            return;
+                        }
+
+                        QTimer::singleShot(50, this, [this, nodeId, mode, failEnable]() {
+                            sendCommand(nodeId, CanopenMotorProtocol::sendControlWord(nodeId, 0x000F),
+                                        [this, nodeId, mode, failEnable](const CommResult &enableResult) {
+                                if (!enableResult.success) {
+                                    failEnable(QStringLiteral("Enable(0x000F)"), enableResult.errorMessage);
+                                    return;
+                                }
+
+                                QTimer::singleShot(50, this, [this, nodeId]() {
+                                    sendCommand(nodeId, CanopenMotorProtocol::nmtStart(nodeId));
+                                });
+
+                                QTimer::singleShot(120, this, [this, nodeId, mode, failEnable]() {
+                                    sendCommand(nodeId, CanopenMotorProtocol::readStatusWord(nodeId),
+                                                [this, nodeId, mode, failEnable](const CommResult &statusResult) {
+                                        if (!statusResult.success) {
+                                            failEnable(QStringLiteral("读取状态字"), statusResult.errorMessage);
+                                            return;
+                                        }
+
+                                        const uint16_t statusWord = CanopenMotorProtocol::parseStatusWord(statusResult);
+                                        const bool enabled = isOperationEnabledStatusWord(statusWord);
+
+                                        auto it2 = nodes_.find(nodeId);
+                                        if (it2 == nodes_.end()) {
+                                            emit motorEnabled(nodeId, false);
+                                            return;
+                                        }
+
+                                        it2->state.enabled = enabled;
+                                        it2->state.online = true;
+                                        it2->state.mode = mode;
+                                        it2->state.lastUpdateTime = QDateTime::currentDateTime();
+                                        emit motorStateChanged(nodeId, it2->state);
+                                        emit motorEnabled(nodeId, enabled);
+
+                                        if (enabled) {
+                                            emit logMessage(LogLevel::Info,
+                                                            QStringLiteral("电机 0x%1 使能确认成功 (StatusWord=0x%2)")
+                                                                .arg(nodeId, 3, 16, QChar('0'))
+                                                                .arg(statusWord, 4, 16, QChar('0')));
+                                        } else {
+                                            emit logMessage(LogLevel::Warning,
+                                                            QStringLiteral("电机 0x%1 未进入 Operation Enabled (StatusWord=0x%2)")
+                                                                .arg(nodeId, 3, 16, QChar('0'))
+                                                                .arg(statusWord, 4, 16, QChar('0')));
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 }
 

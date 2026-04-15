@@ -370,9 +370,27 @@
 			null
 		],
 		[
-			"/home/yang/DualArmRobot/dual_arm_control/communication/frame_io.h",
+			"/home/yang/DualArmRobot/dual_arm_control/communication/controlcan.h",
 			"MU",
-			"HAGZTRH3L5/moc_frame_io.cpp",
+			"HAGZTRH3L5/moc_controlcan.cpp",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h",
+			"MU",
+			"HAGZTRH3L5/moc_ican_adapter.cpp",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.h",
+			"MU",
+			"HAGZTRH3L5/moc_serial_can_adapter.cpp",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.h",
+			"MU",
+			"HAGZTRH3L5/moc_vci_can_adapter.cpp",
 			null
 		],
 		[
@@ -493,7 +511,12 @@
 			null
 		],
 		[
-			"/home/yang/DualArmRobot/dual_arm_control/communication/frame_io.cpp",
+			"/home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.cpp",
 			"MU",
 			null
 		],

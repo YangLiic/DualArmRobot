@@ -14,8 +14,12 @@ set(MODEL_SOURCES
 )
 
 set(COMMUNICATION_SOURCES
-    communication/frame_io.h
-    communication/frame_io.cpp
+    communication/ican_adapter.h
+    communication/serial_can_adapter.h
+    communication/serial_can_adapter.cpp
+    communication/vci_can_adapter.h
+    communication/vci_can_adapter.cpp
+    communication/controlcan.h
     communication/can_bus_worker.h
     communication/can_bus_worker.cpp
     communication/communication_manager.h
@@ -58,8 +62,12 @@ add_executable(dual_arm_control
 
 target_include_directories(dual_arm_control PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
+# libcontrolcan.so is now loaded dynamically via dlopen in VciCanAdapter
+# to prevent resource contention and startup crashes.
+
 target_link_libraries(dual_arm_control PRIVATE
     Qt6::Widgets
     Qt6::Core
     Qt6::SerialPort
+    ${CMAKE_DL_LIBS}
 )

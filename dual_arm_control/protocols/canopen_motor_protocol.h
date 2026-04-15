@@ -69,6 +69,7 @@ public:
     static CommRequest setMaxTorqueLimit(uint32_t nodeId, uint16_t permille);
     static CommRequest startPositionMove(uint32_t nodeId, bool relative);
     static CommRequest clearPositionNewSetpoint(uint32_t nodeId);
+    static CommRequest readStatusWord(uint32_t nodeId);
     static CommRequest readActualTorque(uint32_t nodeId);
     static CommRequest readPhaseCurrent(uint32_t nodeId);
     static CommRequest readPositionDeviation(uint32_t nodeId);
@@ -76,6 +77,7 @@ public:
     static CommRequest lockBrake(uint32_t nodeId);
 
     // ============ 解析结果 ============
+    static uint16_t parseStatusWord(const CommResult &r);
     static int16_t  parseTorquePermille(const CommResult &r);
     static double   parsePhaseCurrentAmp(const CommResult &r);
     static int32_t  parsePositionDeviation(const CommResult &r);

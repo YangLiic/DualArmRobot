@@ -97,24 +97,38 @@ CMakeFiles/dual_arm_control.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/dual_arm_control.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yang/DualArmRobot/dual_arm_control/main.cpp -o CMakeFiles/dual_arm_control.dir/main.cpp.s
 
-CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
-CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o: ../communication/frame_io.cpp
-CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o -MF CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o.d -o CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.cpp
+CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
+CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o: ../communication/serial_can_adapter.cpp
+CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o -MF CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o.d -o CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.cpp
 
-CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.cpp > CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.i
+CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.cpp > CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.i
 
-CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.cpp -o CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.s
+CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.cpp -o CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.s
+
+CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
+CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o: ../communication/vci_can_adapter.cpp
+CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o -MF CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o.d -o CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.cpp
+
+CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.cpp > CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.i
+
+CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.cpp -o CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.s
 
 CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o: ../communication/can_bus_worker.cpp
 CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o -MF CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o.d -o CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.cpp
 
 CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.i: cmake_force
@@ -128,7 +142,7 @@ CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o: ../communication/communication_manager.cpp
 CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o -MF CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o.d -o CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.cpp
 
 CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.i: cmake_force
@@ -142,7 +156,7 @@ CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.s: cmake
 CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o: ../protocols/canopen_motor_protocol.cpp
 CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o -MF CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o.d -o CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/protocols/canopen_motor_protocol.cpp
 
 CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.i: cmake_force
@@ -156,7 +170,7 @@ CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.s: cmake_fo
 CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o: ../services/motor_service.cpp
 CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o -MF CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o.d -o CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/services/motor_service.cpp
 
 CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.i: cmake_force
@@ -170,7 +184,7 @@ CMakeFiles/dual_arm_control.dir/services/motor_service.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o: ../ui/main_window.cpp
 CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o -MF CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o.d -o CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/ui/main_window.cpp
 
 CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.i: cmake_force
@@ -184,7 +198,7 @@ CMakeFiles/dual_arm_control.dir/ui/main_window.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o: ../ui/connection_panel.cpp
 CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o -MF CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o.d -o CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/ui/connection_panel.cpp
 
 CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.i: cmake_force
@@ -198,7 +212,7 @@ CMakeFiles/dual_arm_control.dir/ui/connection_panel.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o: ../ui/motor_control_panel.cpp
 CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o -MF CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o.d -o CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/ui/motor_control_panel.cpp
 
 CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.i: cmake_force
@@ -212,7 +226,7 @@ CMakeFiles/dual_arm_control.dir/ui/motor_control_panel.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o: ../ui/status_monitor_panel.cpp
 CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o -MF CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o.d -o CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/ui/status_monitor_panel.cpp
 
 CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.i: cmake_force
@@ -226,7 +240,7 @@ CMakeFiles/dual_arm_control.dir/ui/status_monitor_panel.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o: ../ui/torque_gauge_widget.cpp
 CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o -MF CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o.d -o CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/ui/torque_gauge_widget.cpp
 
 CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.i: cmake_force
@@ -240,7 +254,7 @@ CMakeFiles/dual_arm_control.dir/ui/torque_gauge_widget.cpp.s: cmake_force
 CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o: CMakeFiles/dual_arm_control.dir/flags.make
 CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o: ../ui/log_widget.cpp
 CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o: CMakeFiles/dual_arm_control.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o -MF CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o.d -o CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.o -c /home/yang/DualArmRobot/dual_arm_control/ui/log_widget.cpp
 
 CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.i: cmake_force
@@ -255,7 +269,8 @@ CMakeFiles/dual_arm_control.dir/ui/log_widget.cpp.s: cmake_force
 dual_arm_control_OBJECTS = \
 "CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o" \
 "CMakeFiles/dual_arm_control.dir/main.cpp.o" \
-"CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o" \
+"CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o" \
+"CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o" \
 "CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o" \
 "CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o" \
 "CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o" \
@@ -272,7 +287,8 @@ dual_arm_control_EXTERNAL_OBJECTS =
 
 dual_arm_control: CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o
 dual_arm_control: CMakeFiles/dual_arm_control.dir/main.cpp.o
-dual_arm_control: CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o
+dual_arm_control: CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o
+dual_arm_control: CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o
 dual_arm_control: CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o
 dual_arm_control: CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o
 dual_arm_control: CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o
@@ -291,7 +307,7 @@ dual_arm_control: /usr/lib/x86_64-linux-gnu/libGLX.so
 dual_arm_control: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 dual_arm_control: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.2.4
 dual_arm_control: CMakeFiles/dual_arm_control.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable dual_arm_control"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/yang/DualArmRobot/dual_arm_control/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable dual_arm_control"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/dual_arm_control.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

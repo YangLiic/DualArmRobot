@@ -62,7 +62,7 @@ python CyberGear/interactive_control.py
 | 参数 | 默认值 | 环境变量 | 说明 |
 |------|--------|---------|------|
 | 串口 | `/dev/ttyUSB0` | `CYBERGEAR_PORT` | USB-CAN 适配器端口 |
-| 电机 CAN ID | `0x01` | `CYBERGEAR_MOTOR_ID` | 电机的 CAN 总线地址 |
+| 电机 CAN ID | `0x02` | `CYBERGEAR_MOTOR_ID` | 电机的 CAN 总线地址 |
 | 主机 CAN ID | `0xFD` | `CYBERGEAR_MASTER_ID` | 主机标识 |
 | 串口波特率 | `921600` | — | 固定值 |
 | CAN 波特率 | `1 Mbps` | — | 适配器内部设置 |

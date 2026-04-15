@@ -47,7 +47,8 @@ CommRequest CanopenMotorProtocol::writeSDO(uint32_t nodeId, uint16_t index, uint
     req.sdoSubindex = sub;
     req.priority = pri;
     req.payloadLen = 8;
-    req.expectResponse = false;
+    req.expectResponse = true;
+    req.timeoutMs = 150;
 
     uint8_t cmd = 0x23;
     if (len == 1)      cmd = 0x2F;
@@ -219,6 +220,11 @@ CommRequest CanopenMotorProtocol::clearPositionNewSetpoint(uint32_t nodeId)
     return sendControlWord(nodeId, 0x000F);
 }
 
+CommRequest CanopenMotorProtocol::readStatusWord(uint32_t nodeId)
+{
+    return readSDO(nodeId, OD::StatusWord, 0x00, 2, Priority::Monitoring);
+}
+
 CommRequest CanopenMotorProtocol::readActualTorque(uint32_t nodeId)
 {
     return readSDO(nodeId, OD::ActualTorque, 0x00, 2, Priority::Monitoring);
@@ -247,6 +253,12 @@ CommRequest CanopenMotorProtocol::lockBrake(uint32_t nodeId)
 }
 
 // ==================== 解析结果 ====================
+
+uint16_t CanopenMotorProtocol::parseStatusWord(const CommResult &r)
+{
+    if (!r.success || r.dlc < 6) return 0;
+    return static_cast<uint16_t>(r.data[4] | (r.data[5] << 8));
+}
 
 int16_t CanopenMotorProtocol::parseTorquePermille(const CommResult &r)
 {

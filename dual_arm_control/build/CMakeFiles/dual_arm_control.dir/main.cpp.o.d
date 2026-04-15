@@ -330,9 +330,9 @@ CMakeFiles/dual_arm_control.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qcalendar.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.h \
  /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.h \
- /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
+ /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
+ /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
+ /usr/include/c++/11/bits/deque.tcc \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMutex \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qmutex.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QWaitCondition \
@@ -340,12 +340,8 @@ CMakeFiles/dual_arm_control.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDeadlineTimer \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h \
- /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/QSerialPort \
- /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialport.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
- /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialportglobal.h \
- /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
- /usr/include/c++/11/bits/deque.tcc \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QQueue \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qqueue.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
@@ -398,8 +394,11 @@ CMakeFiles/dual_arm_control.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextdocument.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qurl.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStackedWidget \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstackedwidget.h \
  /home/yang/DualArmRobot/dual_arm_control/ui/motor_control_panel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDoubleSpinBox \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGroupBox \

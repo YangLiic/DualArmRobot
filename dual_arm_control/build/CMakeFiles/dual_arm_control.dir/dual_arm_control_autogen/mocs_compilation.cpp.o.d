@@ -300,9 +300,9 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h \
- /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
+ /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
+ /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
+ /usr/include/c++/11/bits/deque.tcc \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMutex \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qmutex.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QWaitCondition \
@@ -310,12 +310,8 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDeadlineTimer \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h \
- /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/QSerialPort \
- /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialport.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
- /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialportglobal.h \
- /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
- /usr/include/c++/11/bits/deque.tcc \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QQueue \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qqueue.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
@@ -334,7 +330,6 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/c++/11/bits/std_thread.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMap \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qmap.h \
- /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/HAGZTRH3L5/moc_frame_io.cpp \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/3BYFHCGL5U/moc_motor_service.cpp \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/3BYFHCGL5U/../../../services/motor_service.h \
  /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/UYX5XTB5RZ/moc_connection_panel.cpp \
@@ -395,8 +390,11 @@ CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o:
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpicture.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextdocument.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qurl.h \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStackedWidget \
+ /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstackedwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextcursor.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtextformat.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qpen.h \

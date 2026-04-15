@@ -1,7 +1,7 @@
 /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/HAGZTRH3L5/moc_communication_manager.cpp: /home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.h \
   /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/moc_predefs.h \
   /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.h \
-  /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.h \
+  /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
   /home/yang/DualArmRobot/dual_arm_control/models/common_types.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -327,7 +327,6 @@
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qglobalstatic.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qhash.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qhashfunctions.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevicebase.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qiterable.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qiterator.h \
@@ -378,9 +377,6 @@
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qvarlengtharray.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qversiontagging.h \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qwaitcondition.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/QSerialPort \
-  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialport.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialportglobal.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/syscall.h \

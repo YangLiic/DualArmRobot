@@ -1,4 +1,6 @@
 #include "communication/can_bus_worker.h"
+#include "communication/serial_can_adapter.h"
+#include "communication/vci_can_adapter.h"
 #include <QThread>
 #include <QElapsedTimer>
 #include <cstring>
@@ -19,17 +21,31 @@ void CanBusWorker::configure(const BusConfig &cfg)
     config_ = cfg;
 }
 
+std::unique_ptr<ICanAdapter> CanBusWorker::createAdapter(AdapterType type)
+{
+    switch (type) {
+    case AdapterType::VCI:
+        return std::make_unique<VciCanAdapter>();
+    case AdapterType::Serial:
+    default:
+        return std::make_unique<SerialCanAdapter>();
+    }
+}
+
 void CanBusWorker::start()
 {
-    io_ = new FrameIO(this);
-    if (!io_->openPort(config_.devicePath, config_.baudRate)) {
-        emit busOpened(false, QStringLiteral("串口打开失败: %1").arg(config_.devicePath));
+    adapter_ = createAdapter(config_.adapterType);
+
+    if (!adapter_->open(config_)) {
+        emit busOpened(false, QStringLiteral("适配器打开失败: %1").arg(config_.devicePath));
         return;
     }
+
     running_ = true;
-    emit busOpened(true, QStringLiteral("总线已连接: %1").arg(config_.devicePath));
-    emit logMessage(LogLevel::Info, QStringLiteral("CAN 总线已打开: %1 @ %2 baud")
-                        .arg(config_.devicePath).arg(config_.baudRate));
+    emit busOpened(true, QStringLiteral("总线已连接: %1 [%2]")
+                       .arg(config_.devicePath, adapter_->adapterName()));
+    emit logMessage(LogLevel::Info, QStringLiteral("CAN 总线已打开: %1 [%2]")
+                        .arg(config_.devicePath, adapter_->adapterName()));
 
     tickTimer_ = new QTimer(this);
     tickTimer_->setInterval(2);
@@ -45,10 +61,9 @@ void CanBusWorker::stop()
         tickTimer_->deleteLater();
         tickTimer_ = nullptr;
     }
-    if (io_) {
-        io_->closePort();
-        io_->deleteLater();
-        io_ = nullptr;
+    if (adapter_) {
+        adapter_->close();
+        adapter_.reset();
     }
     emit busClosed();
 }
@@ -81,8 +96,8 @@ void CanBusWorker::onTick()
 {
     if (!running_) return;
 
-    if (io_ && io_->isOpen()) {
-        io_->processIncoming();
+    if (adapter_ && adapter_->isOpen()) {
+        adapter_->processIncoming();
     }
 
     processNextRequest();
@@ -114,7 +129,7 @@ CommResult CanBusWorker::executeRequest(const CommRequest &req)
     txFrame.dlc = req.payloadLen;
     std::memcpy(txFrame.data, req.payload, 8);
 
-    if (!io_ || !io_->sendFrame(txFrame)) {
+    if (!adapter_ || !adapter_->sendFrame(txFrame)) {
         result.success = false;
         result.errorMessage = QStringLiteral("发送失败");
         result.latencyMs = static_cast<int>(timer.elapsed());
@@ -130,13 +145,13 @@ CommResult CanBusWorker::executeRequest(const CommRequest &req)
 
     auto deadline = timer.elapsed() + req.timeoutMs;
     while (timer.elapsed() < deadline) {
-        if (io_) io_->processIncoming();
+        if (adapter_) adapter_->processIncoming();
 
         CanFrame rx;
         int remaining = static_cast<int>(deadline - timer.elapsed());
         if (remaining <= 0) break;
 
-        if (io_->waitForFrame(rx, qMin(remaining, 50))) {
+        if (adapter_->waitForFrame(rx, qMin(remaining, 50))) {
             emit frameReceived(rx);
 
             if (matchResponse(rx, req)) {

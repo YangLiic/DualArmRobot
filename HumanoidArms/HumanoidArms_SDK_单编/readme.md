@@ -25,3 +25,6 @@ moveL_ToPos   线性运动到目标位置
 7.执行
     sudo ./move_sov
     
+
+cd /home/yang/DualArmRobot/HumanoidArms/HumanoidArms_SDK_单编/src
+sudo env LD_LIBRARY_PATH=/home/yang/DualArmRobot/HumanoidArms/HumanoidArms_SDK_单编/usrlib ./sdk_smoke_test left 0 0

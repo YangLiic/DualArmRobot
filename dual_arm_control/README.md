@@ -125,7 +125,7 @@ make -j$(nproc)
 ### 运行
 
 ```bash
-./dual_arm_control
+sudo ./dual_arm_control （使用 CANalyst-II ，记得sudo）
 ```
 
 ---

@@ -1,11 +1,11 @@
 #pragma once
 #include "models/common_types.h"
-#include "communication/frame_io.h"
+#include "communication/ican_adapter.h"
 #include <QObject>
 #include <QMutex>
 #include <QQueue>
 #include <QTimer>
-#include <functional>
+#include <memory>
 
 namespace dac {
 
@@ -14,6 +14,8 @@ namespace dac {
  * 运行在专属 QThread 中，用 QTimer 驱动事件循环而非阻塞死循环，
  * 以便 QThread 的事件循环能正常处理 signal/slot 和 invokeMethod。
  * 按 Priority 插入排队（Critical 插队到最前）。
+ *
+ * 通过 ICanAdapter 接口适配不同硬件后端（串口 CH340 / VCI CANalyst-II）。
  */
 class CanBusWorker : public QObject
 {
@@ -43,9 +45,10 @@ private:
     void processNextRequest();
     CommResult executeRequest(const CommRequest &req);
     bool matchResponse(const CanFrame &frame, const CommRequest &req) const;
+    std::unique_ptr<ICanAdapter> createAdapter(AdapterType type);
 
     BusConfig config_;
-    FrameIO  *io_ = nullptr;
+    std::unique_ptr<ICanAdapter> adapter_;
     QTimer   *tickTimer_ = nullptr;
     bool      running_ = false;
 

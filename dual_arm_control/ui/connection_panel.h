@@ -5,6 +5,7 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include <QLabel>
+#include <QStackedWidget>
 
 namespace dac {
 
@@ -24,9 +25,24 @@ signals:
 public slots:
     void refreshPorts();
 
+private slots:
+    void onAdapterTypeChanged(int index);
+
 private:
+    QComboBox   *adapterCombo_;
+
+    // Serial 参数
+    QWidget     *serialParamsWidget_;
     QComboBox   *portCombo_;
     QComboBox   *baudCombo_;
+
+    // VCI 参数
+    QWidget     *vciParamsWidget_;
+    QComboBox   *vciDeviceCombo_;
+    QComboBox   *vciChannelCombo_;
+    QComboBox   *vciBitrateCombo_;
+
+    QStackedWidget *paramsStack_;
     QPushButton *connectBtn_;
     QPushButton *disconnectBtn_;
     QPushButton *refreshBtn_;

@@ -1,7 +1,8 @@
-CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o: \
- /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.cpp \
+CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o: \
+ /home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.cpp \
  /usr/include/stdc-predef.h \
- /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.h \
+ /home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.h \
+ /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
  /home/yang/DualArmRobot/dual_arm_control/models/common_types.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qstring.h \
@@ -296,7 +297,6 @@ CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qsharedpointer_impl.h \
- /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
  /usr/include/c++/11/bits/deque.tcc \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QMutex \
@@ -306,29 +306,9 @@ CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QDeadlineTimer \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qobject.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QQueue \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qqueue.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qtimer.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qbasictimer.h \
- /home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/QSerialPort \
  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialport.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qiodevice.h \
  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialportglobal.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QByteArray \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearray.h \
- /home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QThread \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qthread.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qdeadlinetimer.h \
- /usr/include/c++/11/future /usr/include/c++/11/mutex \
- /usr/include/c++/11/bits/std_mutex.h \
- /usr/include/c++/11/bits/unique_lock.h \
- /usr/include/c++/11/condition_variable \
- /usr/include/c++/11/bits/atomic_futex.h \
- /usr/include/c++/11/bits/std_thread.h \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/QElapsedTimer \
- /usr/include/x86_64-linux-gnu/qt6/QtCore/qelapsedtimer.h
+ /usr/include/x86_64-linux-gnu/qt6/QtCore/qbytearray.h

@@ -99,21 +99,22 @@ struct CollisionConfig {
 };
 
 // ==================== 总线配置 ====================
+enum class AdapterType {
+    Serial,     // CH340 串口 USB-CAN (0xAA...0x7A 帧协议)
+    VCI         // 创芯科技 / ZLG VCI 协议 (CANalyst-II 等)
+};
+
 struct BusConfig {
-    QString  devicePath;
-    int      baudRate = 9600;
+    AdapterType adapterType = AdapterType::Serial;
+    QString  devicePath;        // Serial: 串口名(如 /dev/ttyUSB0)；VCI: 设备序号(如 "0")
+    int      baudRate = 9600;   // Serial: 串口波特率
+    int      canBitrate = 1000; // VCI: CAN 波特率 (kbps)，默认 1Mbps
+    int      canChannel = 1;    // VCI: CAN 通道号 (0 或 1)
     int      timeoutMs = 100;
 };
 
-// ==================== 日志条目 ====================
+// ==================== 日志级别 ====================
 enum class LogLevel { Info, Warning, Error, Critical };
-
-struct LogEntry {
-    QDateTime  timestamp;
-    LogLevel   level = LogLevel::Info;
-    QString    source;
-    QString    message;
-};
 
 inline QString logLevelText(LogLevel l) {
     switch (l) {

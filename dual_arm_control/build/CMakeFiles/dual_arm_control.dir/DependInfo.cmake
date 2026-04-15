@@ -10,7 +10,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.cpp" "CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/communication/can_bus_worker.cpp.o.d"
   "/home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.cpp" "CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.o.d"
-  "/home/yang/DualArmRobot/dual_arm_control/communication/frame_io.cpp" "CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o.d"
+  "/home/yang/DualArmRobot/dual_arm_control/communication/serial_can_adapter.cpp" "CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o.d"
+  "/home/yang/DualArmRobot/dual_arm_control/communication/vci_can_adapter.cpp" "CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o.d"
   "/home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/mocs_compilation.cpp" "CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/dual_arm_control_autogen/mocs_compilation.cpp.o.d"
   "/home/yang/DualArmRobot/dual_arm_control/main.cpp" "CMakeFiles/dual_arm_control.dir/main.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/main.cpp.o.d"
   "/home/yang/DualArmRobot/dual_arm_control/protocols/canopen_motor_protocol.cpp" "CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o" "gcc" "CMakeFiles/dual_arm_control.dir/protocols/canopen_motor_protocol.cpp.o.d"

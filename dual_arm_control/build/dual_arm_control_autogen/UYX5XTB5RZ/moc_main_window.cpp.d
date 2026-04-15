@@ -2,7 +2,7 @@
   /home/yang/DualArmRobot/dual_arm_control/build/dual_arm_control_autogen/moc_predefs.h \
   /home/yang/DualArmRobot/dual_arm_control/communication/can_bus_worker.h \
   /home/yang/DualArmRobot/dual_arm_control/communication/communication_manager.h \
-  /home/yang/DualArmRobot/dual_arm_control/communication/frame_io.h \
+  /home/yang/DualArmRobot/dual_arm_control/communication/ican_adapter.h \
   /home/yang/DualArmRobot/dual_arm_control/models/common_types.h \
   /home/yang/DualArmRobot/dual_arm_control/services/motor_service.h \
   /home/yang/DualArmRobot/dual_arm_control/ui/connection_panel.h \
@@ -423,9 +423,6 @@
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qtransform.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
   /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/QSerialPort \
-  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialport.h \
-  /usr/include/x86_64-linux-gnu/qt6/QtSerialPort/qserialportglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QComboBox \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QDoubleSpinBox \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGroupBox \
@@ -435,6 +432,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QSpinBox \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStackedWidget \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTabWidget \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
@@ -459,6 +457,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qspinbox.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstackedwidget.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyleoption.h \
   /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabbar.h \

@@ -190,29 +190,53 @@ communication/communication_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/communication_manager.cpp.s
 .PHONY : communication/communication_manager.cpp.s
 
-communication/frame_io.o: communication/frame_io.cpp.o
-.PHONY : communication/frame_io.o
+communication/serial_can_adapter.o: communication/serial_can_adapter.cpp.o
+.PHONY : communication/serial_can_adapter.o
 
 # target to build an object file
-communication/frame_io.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.o
-.PHONY : communication/frame_io.cpp.o
+communication/serial_can_adapter.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.o
+.PHONY : communication/serial_can_adapter.cpp.o
 
-communication/frame_io.i: communication/frame_io.cpp.i
-.PHONY : communication/frame_io.i
+communication/serial_can_adapter.i: communication/serial_can_adapter.cpp.i
+.PHONY : communication/serial_can_adapter.i
 
 # target to preprocess a source file
-communication/frame_io.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.i
-.PHONY : communication/frame_io.cpp.i
+communication/serial_can_adapter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.i
+.PHONY : communication/serial_can_adapter.cpp.i
 
-communication/frame_io.s: communication/frame_io.cpp.s
-.PHONY : communication/frame_io.s
+communication/serial_can_adapter.s: communication/serial_can_adapter.cpp.s
+.PHONY : communication/serial_can_adapter.s
 
 # target to generate assembly for a file
-communication/frame_io.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/frame_io.cpp.s
-.PHONY : communication/frame_io.cpp.s
+communication/serial_can_adapter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/serial_can_adapter.cpp.s
+.PHONY : communication/serial_can_adapter.cpp.s
+
+communication/vci_can_adapter.o: communication/vci_can_adapter.cpp.o
+.PHONY : communication/vci_can_adapter.o
+
+# target to build an object file
+communication/vci_can_adapter.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.o
+.PHONY : communication/vci_can_adapter.cpp.o
+
+communication/vci_can_adapter.i: communication/vci_can_adapter.cpp.i
+.PHONY : communication/vci_can_adapter.i
+
+# target to preprocess a source file
+communication/vci_can_adapter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.i
+.PHONY : communication/vci_can_adapter.cpp.i
+
+communication/vci_can_adapter.s: communication/vci_can_adapter.cpp.s
+.PHONY : communication/vci_can_adapter.s
+
+# target to generate assembly for a file
+communication/vci_can_adapter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dual_arm_control.dir/build.make CMakeFiles/dual_arm_control.dir/communication/vci_can_adapter.cpp.s
+.PHONY : communication/vci_can_adapter.cpp.s
 
 dual_arm_control_autogen/mocs_compilation.o: dual_arm_control_autogen/mocs_compilation.cpp.o
 .PHONY : dual_arm_control_autogen/mocs_compilation.o
@@ -470,9 +494,12 @@ help:
 	@echo "... communication/communication_manager.o"
 	@echo "... communication/communication_manager.i"
 	@echo "... communication/communication_manager.s"
-	@echo "... communication/frame_io.o"
-	@echo "... communication/frame_io.i"
-	@echo "... communication/frame_io.s"
+	@echo "... communication/serial_can_adapter.o"
+	@echo "... communication/serial_can_adapter.i"
+	@echo "... communication/serial_can_adapter.s"
+	@echo "... communication/vci_can_adapter.o"
+	@echo "... communication/vci_can_adapter.i"
+	@echo "... communication/vci_can_adapter.s"
 	@echo "... dual_arm_control_autogen/mocs_compilation.o"
 	@echo "... dual_arm_control_autogen/mocs_compilation.i"
 	@echo "... dual_arm_control_autogen/mocs_compilation.s"
