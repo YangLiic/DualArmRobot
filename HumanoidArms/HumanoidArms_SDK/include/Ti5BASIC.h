@@ -308,4 +308,7 @@ void set_current_mode(ArmSide side,CanDevice &dev, uint32_t current[7]);
 */
 int dragMod(CanDevice &L_dev,CanDevice &R_dev);
 
+/*设置工具坐标系*/
+Matrix<double, 1, 6> setTool(ArmSide side, Matrix<double, 1, 6> _tool);
+
 #endif

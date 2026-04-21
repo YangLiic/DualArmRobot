@@ -22,8 +22,8 @@ private:
     const double d3 = 250e-3;
     const double d5 = 250e-3;
     const double d7 = 0e-3;
-    double ratio=101;
-    // double ratio = 4;//双编码器电机
+    // double ratio=101;
+    double ratio = 4;//双编码器电机
     double res = 65536;
 
     Matrix<double, 1, 6> tool;
@@ -51,6 +51,7 @@ public:
     double getratio() const ;//{ return ratio; }
     
     Matrix<double, 1, 6> getTool();
+    
 
     int speedJ(Matrix<double, 1, 7> &dq);
     // int moveLToPos(Matrix<double, 1, 6> &posd, double vel);
@@ -82,7 +83,14 @@ public:
     Matrix4d fk(const Matrix<double, 1, 7> &q);
     int ik(const Matrix<double, 1, 6> &pos, Matrix<double, 1, 7> &q, double q2);
     int ik_opt(Matrix<double, 1, 6> &posd, Matrix<double, 1, 7> &q_current);
-
+    
+    // /************************2026-4-15 mfs update******************************** */
+    // Matrix<double,1,6> fk(const Matrix<double, 1, dof> &q); 
+    // int ik_analytic(const Matrix<double, 1, 6> &pos, Matrix<double, 1, dof> &q, double q2);
+    // int ik_numeric(Matrix<double, 1, 6> &posd, Matrix<double, 1, dof> &q_current);
+    // int ik(Matrix<double, 1, 6> &posd, Matrix<double, 1, 7> &qc);
+    // /***********************2026-4-15 mfs update********************************* */
+    
     // ******************************Move**************
     int servoJ(int DeviceInd, int CanInd,Matrix<double, 1, 7> &qd);
     int servoJ(CanDevice &dev,Matrix<double, 1, 7> &qd);//socketcan

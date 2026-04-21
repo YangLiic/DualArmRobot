@@ -85,7 +85,9 @@ ConnectionPanel::ConnectionPanel(QWidget *parent) : QWidget(parent)
     grid->addWidget(disconnectBtn_);
 
     statusLabel_ = new QLabel(QStringLiteral("未连接"));
-    statusLabel_->setStyleSheet("QLabel { color: #f9e2af; font-weight: bold; }");
+    statusLabel_->setStyleSheet(
+        "QLabel { background: #f6ead8; color: #9f7645; font-weight: bold; "
+        "border: 1px solid #e3cfb1; border-radius: 9px; padding: 4px 10px; }");
     grid->addWidget(statusLabel_);
     grid->addStretch();
 
@@ -147,8 +149,8 @@ void ConnectionPanel::setBusState(bool open, const QString &msg)
     vciBitrateCombo_->setEnabled(!open);
     statusLabel_->setText(open ? QStringLiteral("已连接") : QStringLiteral("未连接"));
     statusLabel_->setStyleSheet(open
-        ? "QLabel { color: #a6e3a1; font-weight: bold; }"
-        : "QLabel { color: #f9e2af; font-weight: bold; }");
+        ? "QLabel { background: #edf4ec; color: #688a74; font-weight: bold; border: 1px solid #c8d8c8; border-radius: 9px; padding: 4px 10px; }"
+        : "QLabel { background: #f6ead8; color: #9f7645; font-weight: bold; border: 1px solid #e3cfb1; border-radius: 9px; padding: 4px 10px; }");
     Q_UNUSED(msg);
 }
 

@@ -1,226 +1,297 @@
 #include "ui/torque_gauge_widget.h"
+#include <QLinearGradient>
 #include <QPainter>
 #include <QPainterPath>
-#include <QtMath>
-#include <algorithm>
+#include <QSizePolicy>
 
 namespace dac {
+
+namespace {
+
+constexpr qreal kOuterRadius = 16.0;
+constexpr qreal kInnerRadius = 11.0;
+
+} // namespace
 
 TorqueGaugeWidget::TorqueGaugeWidget(QWidget *parent)
     : QWidget(parent)
 {
     setMinimumSize(minimumSizeHint());
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    setAttribute(Qt::WA_TranslucentBackground);
 }
 
-void TorqueGaugeWidget::setNodeLabel(const QString &label) { nodeLabel_ = label; update(); }
-void TorqueGaugeWidget::setMaxRange(int m) { maxRange_ = qMax(1, m); update(); }
-void TorqueGaugeWidget::setThreshold(int t) { threshold_ = t; update(); }
+void TorqueGaugeWidget::setNodeLabel(const QString &label)
+{
+    nodeLabel_ = label;
+    update();
+}
+
+void TorqueGaugeWidget::setMaxRange(int maxPermille)
+{
+    maxRange_ = qMax(1, maxPermille);
+    update();
+}
+
+void TorqueGaugeWidget::setThreshold(int thresholdPermille)
+{
+    threshold_ = qBound(0, thresholdPermille, maxRange_);
+    update();
+}
 
 void TorqueGaugeWidget::setTorqueValue(int permille)
 {
     torque_ = permille;
-    int abs_t = qAbs(permille);
-    if (abs_t > peakTorque_) peakTorque_ = abs_t;
+    peakTorque_ = qMax(peakTorque_, qAbs(permille));
     update();
 }
 
-void TorqueGaugeWidget::setOnline(bool v) { online_ = v; update(); }
-void TorqueGaugeWidget::setEnabled(bool v) { enabled_ = v; update(); }
-void TorqueGaugeWidget::setCollisionTriggered(bool v) { collisionTriggered_ = v; update(); }
-void TorqueGaugeWidget::setCollisionProtection(bool v) { collisionProtection_ = v; update(); }
-
-double TorqueGaugeWidget::valueToAngle(int val) const
+void TorqueGaugeWidget::setOnline(bool online)
 {
-    double ratio = qBound(0.0, static_cast<double>(qAbs(val)) / maxRange_, 1.0);
-    return ARC_START + ratio * ARC_SPAN;
+    online_ = online;
+    update();
+}
+
+void TorqueGaugeWidget::setEnabled(bool enabled)
+{
+    enabled_ = enabled;
+    update();
+}
+
+void TorqueGaugeWidget::setCollisionTriggered(bool triggered)
+{
+    collisionTriggered_ = triggered;
+    update();
+}
+
+void TorqueGaugeWidget::setCollisionProtection(bool on)
+{
+    collisionProtection_ = on;
+    update();
+}
+
+QColor TorqueGaugeWidget::accentColor() const
+{
+    const int absTorque = qAbs(torque_);
+    if (collisionTriggered_) {
+        return QColor("#c8604f");
+    }
+    if (absTorque >= threshold_) {
+        return QColor("#c8844c");
+    }
+    return QColor("#577fa7");
 }
 
 void TorqueGaugeWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing, true);
+    p.setRenderHint(QPainter::TextAntialiasing, true);
 
-    int side = qMin(width(), height() - 30);
-    QRectF arcRect((width() - side) / 2.0 + 10, 10, side - 20, side - 20);
+    const QRectF outerRect = rect().adjusted(1, 1, -1, -1);
+    const QRectF contentRect = outerRect.adjusted(14, 12, -14, -12);
 
-    drawBackground(p, arcRect);
-    drawArc(p, arcRect);
-    drawNeedle(p, arcRect);
-    drawCenter(p, arcRect);
-    drawLabels(p, arcRect);
-    drawStatusLeds(p, arcRect);
+    drawSurface(p, outerRect);
+    drawHeader(p, contentRect);
+    drawBar(p, contentRect);
+    drawFooter(p, contentRect);
 }
 
-void TorqueGaugeWidget::drawBackground(QPainter &p, const QRectF &rect)
+void TorqueGaugeWidget::drawSurface(QPainter &p, const QRectF &rect)
 {
-    p.fillRect(this->rect(), QColor("#1e1e2e"));
+    QLinearGradient surface(rect.topLeft(), rect.bottomLeft());
+    surface.setColorAt(0.0, QColor("#fffdfa"));
+    surface.setColorAt(1.0, QColor("#f3ece3"));
 
-    // 外圈
-    QPen pen(QColor("#45475a"), 2);
-    p.setPen(pen);
-    p.setBrush(QColor("#181825"));
-    p.drawEllipse(rect);
-}
+    QPainterPath path;
+    path.addRoundedRect(rect, kOuterRadius, kOuterRadius);
 
-void TorqueGaugeWidget::drawArc(QPainter &p, const QRectF &rect)
-{
-    QRectF arcR = rect.adjusted(8, 8, -8, -8);
-    double arcW = 12.0;
-
-    // 底色弧（灰）
-    QPen bgPen(QColor("#313244"), arcW, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(bgPen);
-    p.drawArc(arcR, static_cast<int>(ARC_START * 16), static_cast<int>(ARC_SPAN * 16));
-
-    // 安全区（绿色渐变到黄色）
-    double threshRatio = qBound(0.0, static_cast<double>(threshold_) / maxRange_, 1.0);
-    double safeSpan = threshRatio * ARC_SPAN;
-    QPen safePen(QColor("#a6e3a1"), arcW, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(safePen);
-    p.drawArc(arcR, static_cast<int>(ARC_START * 16), static_cast<int>(safeSpan * 16));
-
-    // 危险区（红色）
-    double dangerStart = ARC_START + safeSpan;
-    double dangerSpan = ARC_SPAN - safeSpan;
-    QPen dangerPen(QColor("#f38ba8"), arcW, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(dangerPen);
-    p.drawArc(arcR, static_cast<int>(dangerStart * 16), static_cast<int>(dangerSpan * 16));
-
-    // 当前值弧
-    int abs_t = qAbs(torque_);
-    if (abs_t > 0) {
-        double valRatio = qBound(0.0, static_cast<double>(abs_t) / maxRange_, 1.0);
-        double valSpan = valRatio * ARC_SPAN;
-        QColor valColor = (abs_t >= threshold_) ? QColor("#f38ba8") : QColor("#89b4fa");
-        if (collisionTriggered_) valColor = QColor("#f38ba8");
-        QPen valPen(valColor, arcW + 2, Qt::SolidLine, Qt::RoundCap);
-        p.setPen(valPen);
-        p.drawArc(arcR.adjusted(1, 1, -1, -1),
-                   static_cast<int>(ARC_START * 16),
-                   static_cast<int>(valSpan * 16));
-    }
-}
-
-void TorqueGaugeWidget::drawNeedle(QPainter &p, const QRectF &rect)
-{
-    QPointF center = rect.center();
-    double radius = rect.width() / 2.0 - 22;
-
-    double angle = valueToAngle(torque_);
-    double rad = qDegreesToRadians(angle);
-
-    QPointF tip(center.x() + radius * qCos(rad), center.y() - radius * qSin(rad));
-
-    QPen needlePen(collisionTriggered_ ? QColor("#f38ba8") : QColor("#cdd6f4"), 2.5, Qt::SolidLine, Qt::RoundCap);
-    p.setPen(needlePen);
-    p.drawLine(center, tip);
-
-    // 峰值标记
-    if (peakTorque_ > 0) {
-        double peakAngle = valueToAngle(peakTorque_);
-        double peakRad = qDegreesToRadians(peakAngle);
-        double outerR = radius + 4;
-        QPointF peakPt(center.x() + outerR * qCos(peakRad), center.y() - outerR * qSin(peakRad));
-        p.setPen(Qt::NoPen);
-        p.setBrush(QColor("#f9e2af"));
-        p.drawEllipse(peakPt, 3, 3);
-    }
-}
-
-void TorqueGaugeWidget::drawCenter(QPainter &p, const QRectF &rect)
-{
-    QPointF center = rect.center();
-
-    // 中心圆
     p.setPen(Qt::NoPen);
-    p.setBrush(QColor("#313244"));
-    p.drawEllipse(center, 18, 18);
+    p.fillPath(path, surface);
 
-    // 方向箭头
-    QString dir = (torque_ >= 0) ? "+" : "-";
-    p.setPen(QColor("#cdd6f4"));
-    QFont f = font();
-    f.setPixelSize(14);
-    f.setBold(true);
-    p.setFont(f);
-    p.drawText(QRectF(center.x() - 10, center.y() - 8, 20, 16), Qt::AlignCenter, dir);
+    p.setPen(QPen(QColor("#d8cfc1"), 1.0));
+    p.drawPath(path);
+
+    QPainterPath highlight;
+    highlight.addRoundedRect(rect.adjusted(1.5, 1.5, -1.5, -rect.height() * 0.46), kOuterRadius, kOuterRadius);
+    p.fillPath(highlight, QColor(255, 255, 255, 48));
 }
 
-void TorqueGaugeWidget::drawLabels(QPainter &p, const QRectF &rect)
+void TorqueGaugeWidget::drawHeader(QPainter &p, const QRectF &rect)
 {
-    // 标题
+    const QColor titleColor("#2b3b4c");
+    const QColor mutedColor("#718096");
+    const QColor valueColor = accentColor();
+    const int absTorque = qAbs(torque_);
+    const QString direction = torque_ >= 0 ? QStringLiteral("+") : QStringLiteral("-");
+
     QFont titleFont = font();
-    titleFont.setPixelSize(13);
+    titleFont.setPixelSize(15);
     titleFont.setBold(true);
     p.setFont(titleFont);
-    p.setPen(QColor("#cdd6f4"));
-    p.drawText(QRectF(rect.left(), rect.bottom() - 6, rect.width(), 20), Qt::AlignCenter, nodeLabel_);
+    p.setPen(titleColor);
+    p.drawText(QRectF(rect.left(), rect.top(), rect.width() * 0.58, 22),
+               Qt::AlignLeft | Qt::AlignVCenter, nodeLabel_);
 
-    // 数值
-    QFont valFont = font();
-    valFont.setPixelSize(18);
-    valFont.setBold(true);
-    p.setFont(valFont);
+    QFont valueFont = font();
+    valueFont.setPixelSize(18);
+    valueFont.setBold(true);
+    p.setFont(valueFont);
+    p.setPen(valueColor);
+    p.drawText(QRectF(rect.left() + rect.width() * 0.58, rect.top(), rect.width() * 0.42, 22),
+               Qt::AlignRight | Qt::AlignVCenter,
+               QStringLiteral("%1%2‰").arg(direction).arg(absTorque));
 
-    int abs_t = qAbs(torque_);
-    QColor numColor = (abs_t >= threshold_) ? QColor("#f38ba8") : QColor("#cdd6f4");
-    if (collisionTriggered_) numColor = QColor("#f38ba8");
-    p.setPen(numColor);
+    QFont subFont = font();
+    subFont.setPixelSize(11);
+    p.setFont(subFont);
+    p.setPen(mutedColor);
+    p.drawText(QRectF(rect.left() + rect.width() * 0.58, rect.top() + 22, rect.width() * 0.42, 16),
+               Qt::AlignRight | Qt::AlignVCenter,
+               QStringLiteral("额定 %1%").arg(absTorque / 10.0, 0, 'f', 1));
 
-    QString valStr = QStringLiteral("%1‰ (%2%)")
-                         .arg(torque_)
-                         .arg(abs_t / 10.0, 0, 'f', 1);
-    QPointF center = rect.center();
-    p.drawText(QRectF(rect.left(), center.y() + 22, rect.width(), 22), Qt::AlignCenter, valStr);
-
-    // 峰值
-    QFont smallFont = font();
-    smallFont.setPixelSize(10);
-    p.setFont(smallFont);
-    p.setPen(QColor("#7f849c"));
-    QString peakStr = QStringLiteral("峰值: %1‰").arg(peakTorque_);
-    p.drawText(QRectF(rect.left(), center.y() + 44, rect.width(), 14), Qt::AlignCenter, peakStr);
-
-    // 碰撞触发闪烁文字
-    if (collisionTriggered_) {
-        QFont warnFont = font();
-        warnFont.setPixelSize(14);
-        warnFont.setBold(true);
-        p.setFont(warnFont);
-        p.setPen(QColor("#f38ba8"));
-        p.drawText(QRectF(rect.left(), rect.bottom() + 12, rect.width(), 20),
-                   Qt::AlignCenter, QStringLiteral("碰撞触发!"));
-    }
+    const qreal pillY = rect.top() + 34.0;
+    const qreal pillH = 22.0;
+    qreal x = rect.left();
+    drawStatusPill(p, QRectF(x, pillY, 74, pillH), QStringLiteral("在线"),
+                   QColor("#6f9b78"), online_);
+    x += 82.0;
+    drawStatusPill(p, QRectF(x, pillY, 74, pillH), QStringLiteral("使能"),
+                   QColor("#5f86af"), enabled_);
+    x += 82.0;
+    drawStatusPill(p, QRectF(x, pillY, 92, pillH), QStringLiteral("保护"),
+                   collisionTriggered_ ? QColor("#c8604f") : QColor("#a88553"),
+                   collisionProtection_ || collisionTriggered_);
 }
 
-void TorqueGaugeWidget::drawStatusLeds(QPainter &p, const QRectF &rect)
+void TorqueGaugeWidget::drawBar(QPainter &p, const QRectF &rect)
 {
-    double ledY = rect.top() + 6;
-    double ledX = rect.right() - 50;
-    double ledR = 5;
-    double gap = 14;
+    const int absTorque = qAbs(torque_);
+    const double valueRatio = qBound(0.0, static_cast<double>(absTorque) / maxRange_, 1.0);
+    const double thresholdRatio = qBound(0.0, static_cast<double>(threshold_) / maxRange_, 1.0);
+    const double peakRatio = qBound(0.0, static_cast<double>(peakTorque_) / maxRange_, 1.0);
 
-    auto drawLed = [&](double x, double y, const QColor &color, bool on) {
+    const QRectF trackRect(rect.left(), rect.top() + 64.0, rect.width(), 18.0);
+
+    QPainterPath trackPath;
+    trackPath.addRoundedRect(trackRect, 9.0, 9.0);
+    p.setPen(Qt::NoPen);
+    p.fillPath(trackPath, QColor("#e5ddd0"));
+
+    QPainterPath safePath;
+    safePath.addRoundedRect(QRectF(trackRect.left(), trackRect.top(),
+                                   trackRect.width() * thresholdRatio, trackRect.height()),
+                            9.0, 9.0);
+    p.fillPath(safePath, QColor("#d7e0d3"));
+
+    if (thresholdRatio < 1.0) {
+        QPainterPath riskPath;
+        riskPath.addRoundedRect(QRectF(trackRect.left() + trackRect.width() * thresholdRatio,
+                                       trackRect.top(),
+                                       trackRect.width() * (1.0 - thresholdRatio),
+                                       trackRect.height()),
+                                9.0, 9.0);
+        p.fillPath(riskPath, QColor("#ead8cf"));
+    }
+
+    if (valueRatio > 0.0) {
+        QRectF fillRect(trackRect.left(), trackRect.top(), trackRect.width() * valueRatio, trackRect.height());
+        QLinearGradient fill(fillRect.topLeft(), fillRect.topRight());
+        const QColor accent = accentColor();
+        fill.setColorAt(0.0, accent.lighter(120));
+        fill.setColorAt(1.0, accent.darker(105));
+
+        QPainterPath fillPath;
+        fillPath.addRoundedRect(fillRect, 9.0, 9.0);
+        p.fillPath(fillPath, fill);
+
         p.setPen(Qt::NoPen);
-        p.setBrush(on ? color : QColor("#45475a"));
-        p.drawEllipse(QPointF(x, y), ledR, ledR);
-    };
+        p.setBrush(accent.lighter(135));
+        p.drawEllipse(QPointF(fillRect.right(), fillRect.center().y()), 5.5, 5.5);
+    }
 
-    // 在线
-    drawLed(ledX, ledY, QColor("#a6e3a1"), online_);
-    p.setPen(QColor("#7f849c"));
-    QFont ledFont = font();
-    ledFont.setPixelSize(9);
-    p.setFont(ledFont);
-    p.drawText(QPointF(ledX + 8, ledY + 3), QStringLiteral("在线"));
+    p.setPen(QPen(QColor("#d8cfc1"), 1.0));
+    p.drawRoundedRect(trackRect, 9.0, 9.0);
 
-    // 使能
-    drawLed(ledX, ledY + gap, QColor("#89b4fa"), enabled_);
-    p.drawText(QPointF(ledX + 8, ledY + gap + 3), QStringLiteral("使能"));
+    const qreal thresholdX = trackRect.left() + trackRect.width() * thresholdRatio;
+    p.setPen(QPen(QColor("#9b7f58"), 2.0));
+    p.drawLine(QPointF(thresholdX, trackRect.top() - 5.0),
+               QPointF(thresholdX, trackRect.bottom() + 5.0));
 
-    // 碰撞保护
-    drawLed(ledX, ledY + gap * 2, QColor("#f9e2af"), collisionProtection_);
-    p.drawText(QPointF(ledX + 8, ledY + gap * 2 + 3), QStringLiteral("保护"));
+    if (peakTorque_ > 0) {
+        const qreal peakX = trackRect.left() + trackRect.width() * peakRatio;
+        p.setPen(QPen(QColor("#b58c4d"), 2.0, Qt::DashLine));
+        p.drawLine(QPointF(peakX, trackRect.top() - 7.0),
+                   QPointF(peakX, trackRect.bottom() + 7.0));
+    }
+
+    QFont scaleFont = font();
+    scaleFont.setPixelSize(10);
+    p.setFont(scaleFont);
+    p.setPen(QColor("#7d8a97"));
+    p.drawText(QRectF(trackRect.left(), trackRect.bottom() + 6.0, 42, 14),
+               Qt::AlignLeft | Qt::AlignVCenter, QStringLiteral("0"));
+    p.drawText(QRectF(thresholdX - 36.0, trackRect.bottom() + 6.0, 72, 14),
+               Qt::AlignCenter | Qt::AlignVCenter,
+               QStringLiteral("阈值 %1").arg(threshold_));
+    p.drawText(QRectF(trackRect.right() - 62.0, trackRect.bottom() + 6.0, 62, 14),
+               Qt::AlignRight | Qt::AlignVCenter,
+               QStringLiteral("%1‰").arg(maxRange_));
+}
+
+void TorqueGaugeWidget::drawFooter(QPainter &p, const QRectF &rect)
+{
+    const QColor titleColor("#3e4c5d");
+    const QColor mutedColor("#768392");
+    const QColor warnColor("#c8604f");
+    const qreal footerTop = rect.top() + 96.0;
+
+    QFont infoFont = font();
+    infoFont.setPixelSize(11);
+    p.setFont(infoFont);
+    p.setPen(titleColor);
+
+    const QString directionText = torque_ >= 0 ? QStringLiteral("正向负载") : QStringLiteral("反向负载");
+    p.drawText(QRectF(rect.left(), footerTop, rect.width() / 3.0, 16),
+               Qt::AlignLeft | Qt::AlignVCenter, directionText);
+    p.drawText(QRectF(rect.left() + rect.width() / 3.0, footerTop, rect.width() / 3.0, 16),
+               Qt::AlignCenter | Qt::AlignVCenter,
+               QStringLiteral("峰值 %1‰").arg(peakTorque_));
+    p.drawText(QRectF(rect.left() + rect.width() * 2.0 / 3.0, footerTop, rect.width() / 3.0, 16),
+               Qt::AlignRight | Qt::AlignVCenter,
+               QStringLiteral("保护 %1").arg(collisionProtection_ ? QStringLiteral("已启用") : QStringLiteral("未启用")));
+
+    p.setPen(collisionTriggered_ ? warnColor : mutedColor);
+    p.drawText(QRectF(rect.left(), footerTop + 18.0, rect.width(), 16),
+               Qt::AlignLeft | Qt::AlignVCenter,
+               collisionTriggered_
+                   ? QStringLiteral("碰撞保护已触发，请复核当前扭矩和急停状态。")
+                   : QStringLiteral("条形监控会持续显示当前扭矩占比、阈值位置和历史峰值。"));
+}
+
+void TorqueGaugeWidget::drawStatusPill(QPainter &p, const QRectF &rect, const QString &text,
+                                       const QColor &activeColor, bool active) const
+{
+    const QColor background = active ? activeColor.lighter(185) : QColor("#ece6dd");
+    const QColor border = active ? activeColor.lighter(135) : QColor("#d7cdbf");
+    const QColor textColor = active ? activeColor.darker(150) : QColor("#8a95a0");
+
+    p.setPen(QPen(border, 1.0));
+    p.setBrush(background);
+    p.drawRoundedRect(rect, kInnerRadius, kInnerRadius);
+
+    const QPointF dotCenter(rect.left() + 12.0, rect.center().y());
+    p.setPen(Qt::NoPen);
+    p.setBrush(active ? activeColor : QColor("#c8c0b6"));
+    p.drawEllipse(dotCenter, 4.0, 4.0);
+
+    QFont pillFont = font();
+    pillFont.setPixelSize(10);
+    pillFont.setBold(true);
+    p.setFont(pillFont);
+    p.setPen(textColor);
+    p.drawText(QRectF(rect.left() + 20.0, rect.top(), rect.width() - 24.0, rect.height()),
+               Qt::AlignLeft | Qt::AlignVCenter, text);
 }
 
 } // namespace dac

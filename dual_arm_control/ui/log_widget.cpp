@@ -21,7 +21,13 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent)
     logView_->setReadOnly(true);
     logView_->setFont(QFont("Monospace", 9));
     logView_->setStyleSheet(
-        "QTextEdit { background: #1e1e2e; color: #cdd6f4; border: 1px solid #45475a; border-radius: 4px; }");
+        "QTextEdit {"
+        "  background: #fffdfa;"
+        "  color: #314152;"
+        "  border: 1px solid #d8cfc1;"
+        "  border-radius: 10px;"
+        "  padding: 4px;"
+        "}");
     vbox->addWidget(logView_);
 
     connect(clearBtn_, &QPushButton::clicked, this, &LogWidget::clear);
@@ -31,13 +37,13 @@ void LogWidget::appendLog(dac::LogLevel level, const QString &message)
 {
     QString color;
     switch (level) {
-    case LogLevel::Info:     color = "#a6e3a1"; break;
-    case LogLevel::Warning:  color = "#f9e2af"; break;
-    case LogLevel::Error:    color = "#f38ba8"; break;
-    case LogLevel::Critical: color = "#f38ba8"; break;
+    case LogLevel::Info:     color = "#688a74"; break;
+    case LogLevel::Warning:  color = "#b07a44"; break;
+    case LogLevel::Error:    color = "#bf6655"; break;
+    case LogLevel::Critical: color = "#bf6655"; break;
     }
     QString ts = QDateTime::currentDateTime().toString("hh:mm:ss.zzz");
-    QString html = QStringLiteral("<span style='color:#7f849c;'>%1</span> "
+    QString html = QStringLiteral("<span style='color:#7c8894;'>%1</span> "
                                   "<span style='color:%2;font-weight:bold;'>[%3]</span> %4")
                        .arg(ts, color, logLevelText(level), message.toHtmlEscaped());
     logView_->append(html);

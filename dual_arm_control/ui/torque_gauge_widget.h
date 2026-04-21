@@ -1,17 +1,14 @@
 #pragma once
 #include <QWidget>
-#include <QTimer>
 #include <QColor>
 
 namespace dac {
 
 /*
- * TorqueGaugeWidget: 实时扭矩仪表盘控件。
+ * TorqueGaugeWidget: 实时扭矩条状监控控件。
  *
- * 圆弧仪表样式，显示当前扭矩值(千分比)、碰撞阈值区域、
- * 历史峰值标记、在线/使能/碰撞状态指示。
- * 仿照 interactive_control_cpp.py 中的实时扭矩条形图，
- * 升级为 Qt 圆弧仪表盘。
+ * 以更紧凑的横向条形样式显示当前扭矩、碰撞阈值、
+ * 历史峰值和在线/使能/保护状态，适合在监控面板中并排展示。
  */
 class TorqueGaugeWidget : public QWidget
 {
@@ -35,17 +32,17 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    QSize sizeHint() const override { return QSize(220, 240); }
-    QSize minimumSizeHint() const override { return QSize(160, 180); }
+    QSize sizeHint() const override { return QSize(420, 132); }
+    QSize minimumSizeHint() const override { return QSize(300, 112); }
 
 private:
-    void drawBackground(QPainter &p, const QRectF &rect);
-    void drawArc(QPainter &p, const QRectF &rect);
-    void drawNeedle(QPainter &p, const QRectF &rect);
-    void drawCenter(QPainter &p, const QRectF &rect);
-    void drawLabels(QPainter &p, const QRectF &rect);
-    void drawStatusLeds(QPainter &p, const QRectF &rect);
-    double valueToAngle(int val) const;
+    void drawSurface(QPainter &p, const QRectF &rect);
+    void drawHeader(QPainter &p, const QRectF &rect);
+    void drawBar(QPainter &p, const QRectF &rect);
+    void drawFooter(QPainter &p, const QRectF &rect);
+    void drawStatusPill(QPainter &p, const QRectF &rect, const QString &text,
+                        const QColor &activeColor, bool active) const;
+    QColor accentColor() const;
 
     QString nodeLabel_;
     int     torque_ = 0;          // 当前扭矩
@@ -56,9 +53,6 @@ private:
     bool    enabled_ = false;
     bool    collisionTriggered_ = false;
     bool    collisionProtection_ = false;
-
-    static constexpr double ARC_START = 225.0;
-    static constexpr double ARC_SPAN  = -270.0;
 };
 
 } // namespace dac

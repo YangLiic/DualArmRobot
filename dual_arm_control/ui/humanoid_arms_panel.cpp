@@ -8,18 +8,28 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QWheelEvent>
 #include <algorithm>
 #include <cmath>
 
 namespace {
 
-constexpr int kArmJointCount = 7;
 constexpr int kSliderScale = 10;
-constexpr int kSliderMin = -180 * kSliderScale;
-constexpr int kSliderMax = 180 * kSliderScale;
 constexpr double kRadToDeg = 180.0 / M_PI;
 
-const char *kJointNames[kArmJointCount] = {
+class NoWheelSlider : public QSlider
+{
+public:
+    using QSlider::QSlider;
+
+protected:
+    void wheelEvent(QWheelEvent *event) override
+    {
+        event->ignore();
+    }
+};
+
+const char *kJointNames[dac::kArmJointCount] = {
     "J1 肩俯仰",
     "J2 肩翻滚",
     "J3 肩偏航",
@@ -63,8 +73,8 @@ void HumanoidArmsPanel::setConnectionState(bool connected, const QString &messag
 
     sdkStateLabel_->setText(QStringLiteral("状态: %1").arg(message));
     sdkStateLabel_->setStyleSheet(connected_
-        ? "QLabel { color: #a6e3a1; font-weight: bold; padding: 2px 0; }"
-        : "QLabel { color: #f9e2af; font-weight: bold; padding: 2px 0; }");
+        ? "QLabel { color: #688a74; font-weight: bold; padding: 2px 0; }"
+        : "QLabel { color: #9f7645; font-weight: bold; padding: 2px 0; }");
 
     auto resetArm = [connected_ = connected_](ArmWidgets &widgets) {
         widgets.syncBtn->setEnabled(connected_ && widgets.stateReceived);
@@ -118,6 +128,37 @@ void HumanoidArmsPanel::updateArmState(const dac::ArmState &state)
     widgets.syncBtn->setEnabled(connected_ && widgets.stateReceived);
 }
 
+void HumanoidArmsPanel::setJointLimits(dac::ArmSide side,
+                                       const QVector<double> &minLimitsDeg,
+                                       const QVector<double> &maxLimitsDeg)
+{
+    ArmWidgets &widgets = widgetsForSide(side);
+    widgets.minDegrees.fill(kDefaultArmJointMinDeg, kArmJointCount);
+    widgets.maxDegrees.fill(kDefaultArmJointMaxDeg, kArmJointCount);
+
+    for (int i = 0; i < kArmJointCount; ++i) {
+        double minDeg = minLimitsDeg.value(i, widgets.minDegrees[i]);
+        double maxDeg = maxLimitsDeg.value(i, widgets.maxDegrees[i]);
+        if (minDeg > maxDeg) {
+            std::swap(minDeg, maxDeg);
+        }
+
+        widgets.minDegrees[i] = minDeg;
+        widgets.maxDegrees[i] = maxDeg;
+
+        if (i < widgets.minLimitInputs.size()) {
+            const QSignalBlocker blocker(widgets.minLimitInputs[i]);
+            widgets.minLimitInputs[i]->setValue(minDeg);
+        }
+        if (i < widgets.maxLimitInputs.size()) {
+            const QSignalBlocker blocker(widgets.maxLimitInputs[i]);
+            widgets.maxLimitInputs[i]->setValue(maxDeg);
+        }
+
+        applyJointLimitToSlider(widgets, i);
+    }
+}
+
 void HumanoidArmsPanel::buildConnectionGroup(QVBoxLayout *layout)
 {
     auto *group = new QGroupBox(QStringLiteral("HumanoidArms 机械臂"));
@@ -140,8 +181,11 @@ void HumanoidArmsPanel::buildConnectionGroup(QVBoxLayout *layout)
     velocitySpin_->setRange(0.05, 0.40);
     velocitySpin_->setSingleStep(0.01);
     velocitySpin_->setDecimals(2);
-    velocitySpin_->setValue(0.20);
+    velocitySpin_->setKeyboardTracking(false);
+    velocitySpin_->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
+    velocitySpin_->setValue(0.05);
     velocitySpin_->setSuffix(QStringLiteral(" m/s"));
+    velocitySpin_->setMinimumWidth(110);
     line->addWidget(new QLabel(QStringLiteral("速度:")));
     line->addWidget(velocitySpin_);
     line->addStretch();
@@ -160,9 +204,9 @@ void HumanoidArmsPanel::buildConnectionGroup(QVBoxLayout *layout)
     sdkStateLabel_ = new QLabel;
     vbox->addWidget(sdkStateLabel_);
 
-    auto *hint = new QLabel(QStringLiteral("关节滑块采用角度显示，内部会自动换算为 SDK 所需的弧度；拖动释放后按整臂 7 关节目标发送。"));
+    auto *hint = new QLabel(QStringLiteral("关节滑块采用角度显示，内部会自动换算为 SDK 所需的弧度；每个关节都可在右侧设置软件限位的 Min/Max，拖动释放后按整臂 7 关节目标发送。"));
     hint->setWordWrap(true);
-    hint->setStyleSheet("QLabel { color: #bac2de; }");
+    hint->setStyleSheet("QLabel { color: #6f7d8b; }");
     vbox->addWidget(hint);
 
     layout->addWidget(group);
@@ -179,12 +223,14 @@ void HumanoidArmsPanel::buildArmGroup(QVBoxLayout *layout, dac::ArmSide side)
     ArmWidgets &widgets = widgetsForSide(side);
     widgets.targetDegrees.fill(0.0, kArmJointCount);
     widgets.actualDegrees.fill(0.0, kArmJointCount);
+    widgets.minDegrees.fill(kDefaultArmJointMinDeg, kArmJointCount);
+    widgets.maxDegrees.fill(kDefaultArmJointMaxDeg, kArmJointCount);
 
     auto *group = new QGroupBox(QStringLiteral("%1关节控制").arg(armSideText(side)));
     auto *vbox = new QVBoxLayout(group);
 
     widgets.stateLabel = new QLabel(QStringLiteral("状态: 等待状态刷新"));
-    widgets.stateLabel->setStyleSheet("QLabel { color: #cdd6f4; }");
+    widgets.stateLabel->setStyleSheet("QLabel { color: #324356; }");
     vbox->addWidget(widgets.stateLabel);
 
     for (int i = 0; i < kArmJointCount; ++i) {
@@ -194,11 +240,9 @@ void HumanoidArmsPanel::buildArmGroup(QVBoxLayout *layout, dac::ArmSide side)
         nameLabel->setMinimumWidth(86);
         row->addWidget(nameLabel);
 
-        auto *slider = new QSlider(Qt::Horizontal);
-        slider->setRange(kSliderMin, kSliderMax);
+        auto *slider = new NoWheelSlider(Qt::Horizontal);
         slider->setSingleStep(1);
         slider->setPageStep(50);
-        slider->setToolTip(QStringLiteral("当前暂按 ±180° 配置滑块范围，可后续按真实关节限制再细化"));
         row->addWidget(slider, 1);
 
         auto *targetLabel = new QLabel(QStringLiteral("目标 0.0°"));
@@ -209,9 +253,41 @@ void HumanoidArmsPanel::buildArmGroup(QVBoxLayout *layout, dac::ArmSide side)
         actualLabel->setMinimumWidth(82);
         row->addWidget(actualLabel);
 
+        auto *minLabel = new QLabel(QStringLiteral("Min"));
+        row->addWidget(minLabel);
+
+        auto *minInput = new QDoubleSpinBox;
+        minInput->setRange(kArmLimitInputMinDeg, kArmLimitInputMaxDeg);
+        minInput->setDecimals(1);
+        minInput->setSingleStep(1.0);
+        minInput->setValue(kDefaultArmJointMinDeg);
+        minInput->setSuffix(QStringLiteral("°"));
+        minInput->setMinimumWidth(78);
+        minInput->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        minInput->setReadOnly(true);
+        minInput->setFocusPolicy(Qt::NoFocus);
+        row->addWidget(minInput);
+
+        auto *maxLabel = new QLabel(QStringLiteral("Max"));
+        row->addWidget(maxLabel);
+
+        auto *maxInput = new QDoubleSpinBox;
+        maxInput->setRange(kArmLimitInputMinDeg, kArmLimitInputMaxDeg);
+        maxInput->setDecimals(1);
+        maxInput->setSingleStep(1.0);
+        maxInput->setValue(kDefaultArmJointMaxDeg);
+        maxInput->setSuffix(QStringLiteral("°"));
+        maxInput->setMinimumWidth(78);
+        maxInput->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        maxInput->setReadOnly(true);
+        maxInput->setFocusPolicy(Qt::NoFocus);
+        row->addWidget(maxInput);
+
         widgets.sliders.push_back(slider);
         widgets.targetLabels.push_back(targetLabel);
         widgets.actualLabels.push_back(actualLabel);
+        widgets.minLimitInputs.push_back(minInput);
+        widgets.maxLimitInputs.push_back(maxInput);
 
         connect(slider, &QSlider::valueChanged, this, [this, side, i](int value) {
             ArmWidgets &arm = widgetsForSide(side);
@@ -223,6 +299,8 @@ void HumanoidArmsPanel::buildArmGroup(QVBoxLayout *layout, dac::ArmSide side)
         });
 
         vbox->addLayout(row);
+
+        applyJointLimitToSlider(widgets, i);
     }
 
     auto *btnRow = new QHBoxLayout;
@@ -244,7 +322,7 @@ void HumanoidArmsPanel::buildArmGroup(QVBoxLayout *layout, dac::ArmSide side)
     vbox->addWidget(widgets.errorLabel);
 
     widgets.lastUpdateLabel = new QLabel(QStringLiteral("更新时间: -"));
-    widgets.lastUpdateLabel->setStyleSheet("QLabel { color: #7f849c; }");
+    widgets.lastUpdateLabel->setStyleSheet("QLabel { color: #7c8794; }");
     vbox->addWidget(widgets.lastUpdateLabel);
 
     layout->addWidget(group);
@@ -281,11 +359,7 @@ void HumanoidArmsPanel::syncTargetsFromActual(dac::ArmSide side)
     widgets.targetsInitialized = true;
 
     for (int i = 0; i < widgets.sliders.size(); ++i) {
-        const int sliderValue = std::clamp(static_cast<int>(std::lround(widgets.targetDegrees[i] * kSliderScale)),
-                                           kSliderMin, kSliderMax);
-        const QSignalBlocker blocker(widgets.sliders[i]);
-        widgets.sliders[i]->setValue(sliderValue);
-        widgets.targetLabels[i]->setText(QStringLiteral("目标 %1").arg(formatDegrees(widgets.targetDegrees[i])));
+        applyJointLimitToSlider(widgets, i);
     }
 
     updateArmStateText(side);
@@ -300,8 +374,8 @@ void HumanoidArmsPanel::updateArmStateText(dac::ArmSide side)
                        .arg(widgets.targetsInitialized ? QStringLiteral("已同步") : QStringLiteral("未同步"));
     widgets.stateLabel->setText(text);
     widgets.stateLabel->setStyleSheet(widgets.stateReceived
-        ? "QLabel { color: #a6e3a1; font-weight: bold; }"
-        : "QLabel { color: #f9e2af; font-weight: bold; }");
+        ? "QLabel { color: #688a74; font-weight: bold; }"
+        : "QLabel { color: #9f7645; font-weight: bold; }");
 }
 
 void HumanoidArmsPanel::emitJointTargets(dac::ArmSide side)
@@ -318,7 +392,54 @@ void HumanoidArmsPanel::emitJointTargets(dac::ArmSide side)
         }
     }
 
+    velocitySpin_->interpretText();
     emit jointTargetsRequested(side, widgets.targetDegrees, velocitySpin_->value());
+}
+
+void HumanoidArmsPanel::emitJointLimits(dac::ArmSide side)
+{
+    ArmWidgets &widgets = widgetsForSide(side);
+    QVector<double> minLimitsDeg;
+    QVector<double> maxLimitsDeg;
+    minLimitsDeg.reserve(kArmJointCount);
+    maxLimitsDeg.reserve(kArmJointCount);
+
+    for (int i = 0; i < kArmJointCount; ++i) {
+        minLimitsDeg.push_back(i < widgets.minLimitInputs.size()
+                                   ? widgets.minLimitInputs[i]->value()
+                                   : kDefaultArmJointMinDeg);
+        maxLimitsDeg.push_back(i < widgets.maxLimitInputs.size()
+                                   ? widgets.maxLimitInputs[i]->value()
+                                   : kDefaultArmJointMaxDeg);
+    }
+
+    emit jointLimitsRequested(side, minLimitsDeg, maxLimitsDeg);
+}
+
+void HumanoidArmsPanel::applyJointLimitToSlider(ArmWidgets &widgets, int jointIndex)
+{
+    if (jointIndex < 0 || jointIndex >= widgets.sliders.size()) {
+        return;
+    }
+
+    const double minDeg = widgets.minDegrees.value(jointIndex, kDefaultArmJointMinDeg);
+    const double maxDeg = widgets.maxDegrees.value(jointIndex, kDefaultArmJointMaxDeg);
+    const int sliderMin = static_cast<int>(std::lround(minDeg * kSliderScale));
+    const int sliderMax = static_cast<int>(std::lround(maxDeg * kSliderScale));
+
+    widgets.targetDegrees[jointIndex] = std::clamp(widgets.targetDegrees.value(jointIndex, 0.0), minDeg, maxDeg);
+    const int sliderValue = static_cast<int>(std::lround(widgets.targetDegrees[jointIndex] * kSliderScale));
+
+    {
+        const QSignalBlocker blocker(widgets.sliders[jointIndex]);
+        widgets.sliders[jointIndex]->setRange(sliderMin, sliderMax);
+        widgets.sliders[jointIndex]->setValue(sliderValue);
+    }
+
+    widgets.sliders[jointIndex]->setToolTip(
+        QStringLiteral("软限位范围: [%1, %2]").arg(formatDegrees(minDeg), formatDegrees(maxDeg)));
+    widgets.targetLabels[jointIndex]->setText(
+        QStringLiteral("目标 %1").arg(formatDegrees(widgets.targetDegrees[jointIndex])));
 }
 
 QString HumanoidArmsPanel::poseText(const QVector<double> &pose)

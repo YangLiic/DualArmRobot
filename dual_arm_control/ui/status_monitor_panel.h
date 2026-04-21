@@ -5,7 +5,6 @@
 #include <QLabel>
 #include <QMap>
 #include <QGroupBox>
-#include <QProgressBar>
 #include <QHBoxLayout>
 
 namespace dac {
@@ -13,8 +12,8 @@ namespace dac {
 /*
  * StatusMonitorPanel: 实时状态监控面板。
  *
- * 同屏显示两个电机的扭矩仪表盘 + 碰撞检测状态
- * + 各种实时数据(在线/使能/故障/扭矩/电流/碰撞)。
+ * 同屏显示两个电机的紧凑型扭矩条监控卡片
+ * + 各种实时数据(在线/使能/故障/扭矩/碰撞)。
  */
 class StatusMonitorPanel : public QWidget
 {
@@ -39,7 +38,6 @@ private:
         QLabel *torqueLabel = nullptr;
         QLabel *collisionLabel = nullptr;
         QLabel *faultLabel = nullptr;
-        QProgressBar *torqueBar = nullptr;
         int thresholdPermille = 0;
     };
 

@@ -127,6 +127,7 @@ CommResult CanBusWorker::executeRequest(const CommRequest &req)
     CanFrame txFrame;
     txFrame.canId = req.canId;
     txFrame.dlc = req.payloadLen;
+    txFrame.isExtended = req.isExtendedFrame;
     std::memcpy(txFrame.data, req.payload, 8);
 
     if (!adapter_ || !adapter_->sendFrame(txFrame)) {
@@ -178,11 +179,30 @@ CommResult CanBusWorker::executeRequest(const CommRequest &req)
 bool CanBusWorker::matchResponse(const CanFrame &frame, const CommRequest &req) const
 {
     if (frame.canId != req.responseCanId) return false;
-    if (frame.dlc < 4) return false;
-    if (frame.data[1] != (req.sdoIndex & 0xFF)) return false;
-    if (frame.data[2] != ((req.sdoIndex >> 8) & 0xFF)) return false;
-    if (frame.data[3] != req.sdoSubindex) return false;
-    return true;
+
+    switch (req.protocolType) {
+    case ProtocolType::CANopenSDO:
+        if (frame.dlc < 4) return false;
+        if (frame.data[1] != (req.sdoIndex & 0xFF)) return false;
+        if (frame.data[2] != ((req.sdoIndex >> 8) & 0xFF)) return false;
+        if (frame.data[3] != req.sdoSubindex) return false;
+        return true;
+
+    case ProtocolType::ZE300Cmd:
+        if (frame.dlc < 1) return false;
+        return frame.data[0] == req.ze300ExpectedCmd;
+
+    case ProtocolType::CyberGear: {
+        if (!frame.isExtended) return false;
+        uint8_t cmdType  = (frame.canId >> 24) & 0x3F;
+        uint8_t motorId  = (frame.canId >> 8) & 0xFF;
+        uint8_t targetId = frame.canId & 0xFF;
+        if (targetId != req.cgMasterId) return false;
+        if (motorId != req.cgMotorId) return false;
+        return cmdType == req.cgExpectedCmdType;
+    }
+    }
+    return false;
 }
 
 } // namespace dac

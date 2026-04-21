@@ -80,7 +80,7 @@ bool VciCanAdapter::sendFrame(const CanFrame &frame) {
     obj.ID = frame.canId;
     obj.SendType = 0;
     obj.RemoteFlag = 0;
-    obj.ExternFlag = 0;
+    obj.ExternFlag = frame.isExtended ? 1 : 0;
     obj.DataLen = static_cast<BYTE>(frame.dlc);
     std::memcpy(obj.Data, frame.data, 8);
     return fn_Transmit_(deviceType_, deviceInd_, canChannel_, &obj, 1) == 1;
@@ -97,6 +97,7 @@ void VciCanAdapter::processIncoming() {
         CanFrame f;
         f.canId = obj.ID;
         f.dlc = obj.DataLen;
+        f.isExtended = (obj.ExternFlag != 0);
         std::memcpy(f.data, obj.Data, 8);
         f.sequence = ++sequence_;
         frameQueue_.push_back(f);

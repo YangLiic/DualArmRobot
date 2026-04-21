@@ -7,7 +7,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core SerialPort)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Core SerialPort Network)
 
 set(HUMANOID_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../HumanoidArms/HumanoidArms_SDK")
 set(HUMANOID_SDK_INCLUDE_DIR "${HUMANOID_SDK_DIR}/include")
@@ -59,6 +59,10 @@ set(PROTOCOL_SOURCES
     protocols/canopen_motor_protocol.cpp
     protocols/humanoid_arms_sdk_adapter.h
     protocols/humanoid_arms_sdk_adapter.cpp
+    protocols/ze300_protocol.h
+    protocols/ze300_protocol.cpp
+    protocols/cybergear_protocol.h
+    protocols/cybergear_protocol.cpp
 )
 
 set(SERVICE_SOURCES
@@ -66,6 +70,14 @@ set(SERVICE_SOURCES
     services/motor_service.cpp
     services/arm_service.h
     services/arm_service.cpp
+    services/ze300_service.h
+    services/ze300_service.cpp
+    services/cybergear_service.h
+    services/cybergear_service.cpp
+    services/gripper_worker.h
+    services/gripper_worker.cpp
+    services/gripper_service.h
+    services/gripper_service.cpp
 )
 
 set(UI_SOURCES
@@ -83,6 +95,12 @@ set(UI_SOURCES
     ui/log_widget.cpp
     ui/humanoid_arms_panel.h
     ui/humanoid_arms_panel.cpp
+    ui/ze300_control_panel.h
+    ui/ze300_control_panel.cpp
+    ui/cybergear_control_panel.h
+    ui/cybergear_control_panel.cpp
+    ui/gripper_control_panel.h
+    ui/gripper_control_panel.cpp
 )
 
 add_executable(dual_arm_control
@@ -115,6 +133,7 @@ target_link_libraries(dual_arm_control PRIVATE
     Qt6::Widgets
     Qt6::Core
     Qt6::SerialPort
+    Qt6::Network
     ${HUMANOID_SDK_LIB}
     ${HUMANOID_SDK_CONTROLCAN_LIB}
     ${NCURSES_LIB}

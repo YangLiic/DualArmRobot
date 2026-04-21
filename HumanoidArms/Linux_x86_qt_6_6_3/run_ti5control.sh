@@ -2,7 +2,7 @@
 
 # 获取当前脚本所在目录
 APPDIR="$(cd "$(dirname "$0")" && pwd)"
-SDK_LIB_DIR="$APPDIR/../HumanoidArms_SDK_单编/usrlib"
+SDK_LIB_DIR="$APPDIR/../HumanoidArms_SDK/usrlib"
 
 export QML2_IMPORT_PATH="$APPDIR/qml"
 

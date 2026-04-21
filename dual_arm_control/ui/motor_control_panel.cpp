@@ -19,7 +19,9 @@ MotorControlPanel::MotorControlPanel(QWidget *parent) : QWidget(parent)
     buildBatchButtons(vbox);
 
     stateLabel_ = new QLabel(QStringLiteral("状态: -"));
-    stateLabel_->setStyleSheet("QLabel { color: #cdd6f4; padding: 4px; }");
+    stateLabel_->setStyleSheet(
+        "QLabel { background: #fffaf4; color: #314152; border: 1px solid #ddd2c4; "
+        "border-radius: 8px; padding: 6px 10px; }");
     vbox->addWidget(stateLabel_);
     vbox->addStretch();
 }
@@ -259,11 +261,17 @@ void MotorControlPanel::updateMotorState(uint32_t nodeId, const MotorState &stat
     stateLabel_->setText(stateStr);
 
     if (state.collisionTriggered) {
-        stateLabel_->setStyleSheet("QLabel { color: #f38ba8; font-weight: bold; padding: 4px; }");
+        stateLabel_->setStyleSheet(
+            "QLabel { background: #f7e4e0; color: #bf6655; font-weight: bold; "
+            "border: 1px solid #e2bdb5; border-radius: 8px; padding: 6px 10px; }");
     } else if (state.enabled) {
-        stateLabel_->setStyleSheet("QLabel { color: #a6e3a1; padding: 4px; }");
+        stateLabel_->setStyleSheet(
+            "QLabel { background: #edf4ec; color: #688a74; font-weight: 600; "
+            "border: 1px solid #c8d8c8; border-radius: 8px; padding: 6px 10px; }");
     } else {
-        stateLabel_->setStyleSheet("QLabel { color: #cdd6f4; padding: 4px; }");
+        stateLabel_->setStyleSheet(
+            "QLabel { background: #fffaf4; color: #314152; border: 1px solid #ddd2c4; "
+            "border-radius: 8px; padding: 6px 10px; }");
     }
 }
 

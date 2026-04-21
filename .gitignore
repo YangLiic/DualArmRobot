@@ -18,6 +18,26 @@ ZE300/cpp_version/*.so
 __pycache__/
 *.pyc
 
+# Python 虚拟环境
+.venv/
+venv/
+
+# dual_arm_control 构建产物
+dual_arm_control/build/
+cmake-build-*/
+
+# Qt / CMake 本地用户配置
+*.pro.user
+*.pro.user.*
+*.qtc_clangd
+CMakeUserPresets.json
+
+# HumanoidArms 本地运行文件
+HumanoidArms/HumanoidArms_SDK/src/input_*.txt
+HumanoidArms/Linux_x86_qt_6_6_3/data/*.csv
+HumanoidArms/Linux_x86_qt_6_6_3/log/*.txt
+HumanoidArms/Ti5Control_2.1.7/log/*.txt
+
 # 本地资料（不纳入版本控制）
 CyberGear/小米电机专用资料/
 CyberGear/头部旋转电机-小米/

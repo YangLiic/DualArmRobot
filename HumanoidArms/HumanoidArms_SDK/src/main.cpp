@@ -67,6 +67,7 @@ int main()
         cout << BLUE << "请选择模式：" << RESET << endl;
         cout << BLUE << "1.关节运动：" << RESET << endl;
         cout << BLUE << "2.坐标运动：" << RESET << endl;
+        cout << BLUE << "3.坐标直线运动：" << RESET << endl;
         cout << BLUE << "4.获取当前关节角度：" << RESET << endl;
         cout << BLUE << "5.获取当前关节坐标：" << RESET << endl;
         cout << BLUE << "6.获取机械臂错误状态：" << RESET << endl;
@@ -92,6 +93,11 @@ int main()
 			}
             case '2':{
                 ifstream in1("input_Pos.txt");
+				// for(int i = 0; i < 6; i++)
+				// {
+				// 	in1 >> input_pos(i);
+				// }
+				// 逐行读取 2×6 数据
 				for (int i = 0; i < 2; ++i) {
 					for (int j = 0; j < 6; ++j) {
 						in1 >> input_pos(i, j);
@@ -106,6 +112,10 @@ int main()
 				moveJ_ToPos(RIGHT_ARM,0,0,posd2,vel);
                 break;
 			}
+            case '3':
+                // float num[6];
+                // keyboard_save_point(num,0,0);
+                break;
             case '4':
                 left_angle = get_joint(LEFT_ARM,0,0);
 				right_angle = get_joint(RIGHT_ARM,0,0);
@@ -134,6 +144,24 @@ int main()
                 cout << GREEN << "无效的选项，请重新选择。" << RESET << endl;
                 break;
         }
+/*
+		if (cmd == 2)
+		{
+
+			ifstream in0("input_Pos.txt");
+			for (int i = 0; i < 6; i++)
+			{
+				in0 >> input(i);
+			}
+			posd = input.block(0, 0, 1, 6);
+			q.setZero();//把关节角向量 q 清零（一般是 Eigen::Matrix<double, 1, 7>），用于存放逆解结果。
+			auto  cycle_start=chrono::high_resolution_clock::now();
+			t5r.ik_opt(posd,q);
+			// t5l.getOPt_IK(posd,q);
+			double elapsed_ms=duration< double,std::milli> (chrono::high_resolution_clock::now()-cycle_start).count();
+
+			cout << "elapsed_ms="<<elapsed_ms<<", q=" << q * deg << endl;
+		}*/
 
 	}
 	Exit();

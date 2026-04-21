@@ -1,5 +1,6 @@
 #include "protocols/humanoid_arms_sdk_adapter.h"
 #include <QDateTime>
+#include <QThread>
 #include <QStringList>
 #include <QtGlobal>
 #include <algorithm>
@@ -11,6 +12,9 @@ namespace {
 
 constexpr int kArmJointCount = 7;
 constexpr int kArmPoseCount = 6;
+constexpr int kSdkInitMaxRetries = 3;
+constexpr int kSdkInitRetryDelayMs = 250;
+constexpr double kRadToDeg = 180.0 / M_PI;
 
 ::ArmSide toSdkArmSide(dac::ArmSide side)
 {
@@ -56,6 +60,22 @@ QString summarizeErrors(const QVector<int32_t> &errors)
     return parts.isEmpty() ? QStringLiteral("无错误") : parts.join(QStringLiteral(" | "));
 }
 
+QString formatJointValues(const QVector<double> &values,
+                         int precision,
+                         const QString &unitSuffix,
+                         double scale = 1.0)
+{
+    QStringList parts;
+    parts.reserve(values.size());
+    for (int i = 0; i < values.size(); ++i) {
+        parts << QStringLiteral("J%1=%2%3")
+                     .arg(i + 1)
+                     .arg(values[i] * scale, 0, 'f', precision)
+                     .arg(unitSuffix);
+    }
+    return parts.join(QStringLiteral(", "));
+}
+
 } // namespace
 
 namespace dac {
@@ -75,16 +95,50 @@ void HumanoidArmsSdkAdapter::initializeSdk(int deviceIndex, int canIndex)
     deviceIndex_ = deviceIndex;
     canIndex_ = canIndex;
 
-    can_init();
+    // Prefer Start() over can_init():
+    // can_init() may call exit(0) internally when device probing fails.
+    bool started = false;
+    for (int attempt = 1; attempt <= kSdkInitMaxRetries; ++attempt) {
+        started = Start();
+        if (started) {
+            if (attempt > 1) {
+                emit logMessage(
+                    LogLevel::Warning,
+                    QStringLiteral("机械臂 SDK 初始化第 %1 次重试成功").arg(attempt));
+            }
+            break;
+        }
+
+        emit logMessage(
+            LogLevel::Warning,
+            QStringLiteral("机械臂 SDK 初始化失败（第 %1/%2 次），准备重试")
+                .arg(attempt)
+                .arg(kSdkInitMaxRetries));
+
+        // Defensive cleanup to release any partially opened VCI handles.
+        Exit();
+        if (attempt < kSdkInitMaxRetries) {
+            QThread::msleep(kSdkInitRetryDelayMs);
+        }
+    }
+
+    if (!started) {
+        initialized_ = false;
+        emit logMessage(
+            LogLevel::Error,
+            QStringLiteral("机械臂 SDK 初始化失败（deviceIndex=%1, canIndex=%2），请检查设备权限/占用")
+                .arg(deviceIndex_)
+                .arg(canIndex_));
+        emit initializationChanged(false, QStringLiteral("机械臂 SDK 初始化失败"));
+        return;
+    }
     initialized_ = true;
 
     emit logMessage(LogLevel::Info,
-                    QStringLiteral("机械臂 SDK 初始化完成，deviceIndex=%1, canIndex=%2")
+                    QStringLiteral("机械臂 SDK 初始化完成，deviceIndex=%1, canIndex=%2；请手动点击“刷新状态”确认左右臂在线状态")
                         .arg(deviceIndex_)
                         .arg(canIndex_));
     emit initializationChanged(true, QStringLiteral("机械臂 SDK 已连接"));
-
-    refreshAllStates();
 }
 
 void HumanoidArmsSdkAdapter::shutdownSdk()
@@ -147,6 +201,14 @@ void HumanoidArmsSdkAdapter::moveToJointPositions(dac::ArmSide side,
         qd(i) = jointPositionsRad[i];
     }
 
+    emit logMessage(
+        LogLevel::Info,
+        QStringLiteral("%1 SDK关节参数: rad={%2} | deg={%3} | vel=%4 m/s")
+            .arg(armSideText(side))
+            .arg(formatJointValues(jointPositionsRad, 4, QStringLiteral("rad")))
+            .arg(formatJointValues(jointPositionsRad, 1, QStringLiteral("°"), kRadToDeg))
+            .arg(velocity, 0, 'f', 2));
+
     const int rc = moveJ_ToJoint(toSdkArmSide(side), deviceIndex_, canIndex_, qd, velocity);
     const QString msg = QStringLiteral("%1关节位置命令已发送，速度=%2 m/s，返回码=%3")
                             .arg(armSideText(side))
@@ -205,17 +267,23 @@ ArmState HumanoidArmsSdkAdapter::readArmState(dac::ArmSide side, bool includeErr
     const MatrixXd joint = get_joint(toSdkArmSide(side), deviceIndex_, canIndex_);
     const MatrixXd pose = get_Pos(toSdkArmSide(side), deviceIndex_, canIndex_);
 
-    state.online = true;
     state.jointPositionsRad = matrixToVector(joint, kArmJointCount);
     state.tcpPose = matrixToVector(pose, kArmPoseCount);
+    const bool sizeOk = (joint.size() >= kArmJointCount && pose.size() >= kArmPoseCount);
+    state.online = sizeOk;
+    if (!sizeOk) {
+        state.errorSummary = QStringLiteral("状态读取异常（关节/位姿数据长度不足）");
+    }
     if (includeErrors) {
         get_mechanicalarm_status(toSdkArmSide(side), deviceIndex_, canIndex_, errors);
         state.errorCodes = errorArrayToVector(errors, kArmJointCount);
-        state.errorSummary = summarizeErrors(state.errorCodes);
+        if (sizeOk) {
+            state.errorSummary = summarizeErrors(state.errorCodes);
+        }
     }
 
     if (ok) {
-        *ok = true;
+        *ok = sizeOk;
     }
     return state;
 }
