@@ -1,0 +1,14 @@
+# === 核心依赖（电机控制） ===
+pyserial>=3.5            # 串口通信
+pymodbus>=2.5.3,<3.0     # Modbus 协议（Inspire 灵巧手等）
+pybind11>=2.11           # C++ 扩展绑定（编译驱动需要）
+
+# === GUI 与可视化 ===
+PyQt6>=6.5               # dual_arm_control 图形界面
+matplotlib>=3.7          # 数据绘图
+numpy>=1.24              # 数值计算
+
+# === 可选依赖（3D 模型 / 科学计算） ===
+# scipy>=1.10
+# trimesh>=4.0
+# imageio>=2.30

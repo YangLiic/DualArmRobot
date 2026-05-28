@@ -37,7 +37,7 @@ HumanoidArms/HumanoidArms_SDK/src/input_*.txt
 HumanoidArms/Linux_x86_qt_6_6_3/data/*.csv
 HumanoidArms/Linux_x86_qt_6_6_3/log/*.txt
 HumanoidArms/Ti5Control_2.1.7/log/*.txt
-
+HumanoidArms/Linux_x86_qt_6_6_3/backup/Linux_x86_qt_6_6_3.tar.xz
 # 本地资料（不纳入版本控制）
 CyberGear/小米电机专用资料/
 CyberGear/头部旋转电机-小米/
