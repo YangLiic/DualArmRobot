@@ -29,11 +29,13 @@ sudo chmod 777 /dev/ttyUSB0
 
 ### 3. 编译 C++ 模块（首次使用）
 
-```bash
-cd CyberGear/cpp_version
+> 需要先完成项目环境搭建，参照 [项目主 README](../README.md)。
 
-# 安装依赖（首次）
-uv pip install setuptools pybind11
+```bash
+# 确保已激活项目虚拟环境
+source .venv/bin/activate
+
+cd CyberGear/cpp_version
 
 # 编译
 python setup.py build_ext --inplace

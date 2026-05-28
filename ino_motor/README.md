@@ -88,19 +88,14 @@ sudo chmod 777 /dev/ttyUSB0
 cd DualArmRobot
 ```
 
-### 3. UV 环境使用
+### 3. 激活项目虚拟环境
 
-[UV](https://github.com/astral-sh/uv) 是一个快速的 Python 包管理器。
+项目使用统一的虚拟环境，如尚未创建请参照 [项目主 README](../README.md) 完成环境搭建。
 
 ```bash
-# 创建虚拟环境 (首次)
-uv venv
-
-# 激活环境
+# 回到项目根目录激活环境
+cd DualArmRobot
 source .venv/bin/activate
-
-# 安装依赖
-uv pip install pyserial
 ```
 
 ### 4. 运行测试

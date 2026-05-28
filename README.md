@@ -1,84 +1,73 @@
 # 双臂机器人 (DualArmRobot)
 
-本项目旨在通过多个 USB-CAN 适配器实现对多台电机的协同控制，目前共涉及四台电机：
+## 环境准备与依赖安装 (首次使用)
 
-> ⚠️ **重要提醒（高优先级）**：
-> 在使用任意一个电机（共四台）前，**必须先确认对应的串口端口号**（`/dev/ttyUSBx`）。
-> 端口号识别错误是当前最容易导致“电机无响应/控制异常”的原因。
+> 💡 项目使用 Python 虚拟环境管理依赖，`.venv/` 目录不纳入版本控制。
+> 首次 clone 后需按以下步骤搭建环境。
 
-## 电机配置与模块分配
-
-为了保证通信效率和兼容性，项目将电机分为两组，分别连接到两个 USB-CAN 模块：
-
-### 1. Inovance 电机组 (2台)
-*   **电机型号**：汇川伺服电机 (Node ID: `0x601`, `0x602`)
-*   **共享模块**：模块 A
-*   **通信参数**：
-    *   **串口波特率**：`9600 bps`
-    *   **CAN 总线波特率**：`500 kbps`
-*   **SDK 目录**：`ino_motor/`
-
-### 2. 小米 & 瑞龙电机组 (2台)
-*   **电机型号**：
-    *   小米 **CyberGear** (Node ID: `0x01` )
-    *   瑞龙 **ZE300** (待开发)
-*   **共享模块**：模块 B
-*   **通信参数**：
-    *   **串口波特率**：`921600 bps`
-    *   **CAN 总线波特率**：`1000 kbps (1 Mbps)`
-*   **SDK 目录**：`CyberGear/`
-
----
-
-## CAN-USB 模块连接与管理
-
-由于两个模块使用的是相同的 CH340 芯片，Linux 下的默认设备名 (`/dev/ttyUSB0`, `/dev/ttyUSB1`) 会随着**插入顺序**而变化。
-
-> ⚠️ **再次强调**：
-> 无论控制 Inovance、CyberGear 还是 ZE300，运行前都先执行端口确认命令，确认当前端口映射无误后再发送控制命令。
-
-### 端口确定与权限
-
-1.  **确定序号**：通常先插入的模块对应较小的数值 (`ttyUSB0`)。建议通过以下命令查看连接情况：
-    ```bash
-    # 查看设备列表
-    ls /dev/ttyUSB*
-
-    # 查看物理端口映射（推荐，路径固定）
-    ls -la /dev/serial/by-path/
-    ```
-2.  **赋予权限**：每次重新插拔后，需要对使用的端口赋权：
-    ```bash
-    sudo chmod 777 /dev/ttyUSB0
-    sudo chmod 777 /dev/ttyUSB1
-    ```
-
-### 3. 环境准备与编译 (首次使用)
-
-在运行控制程序之前，需要先编译对应的 C++ 驱动模块：
+### 系统依赖 (Ubuntu/Debian)
 
 ```bash
-# 激活环境
-source .venv/bin/activate
-
-# 编译 Inovance 驱动
-cd ino_motor/cpp_version && python setup.py build_ext --inplace && cd ../..
-
-# 编译 CyberGear 驱动
-cd CyberGear/cpp_version && python setup.py build_ext --inplace && cd ../..
+sudo apt update
+sudo apt install python3-venv python3-dev build-essential cmake qt6-base-dev libqt6serialport6-dev
 ```
 
+### 创建虚拟环境并安装 Python 依赖
+
+```bash
+# 创建虚拟环境（仅首次）
+python3 -m venv .venv
+
+# 激活虚拟环境
+source .venv/bin/activate
+
+# 安装项目依赖
+pip install -r requirements.txt
+```
+
+> ⚠️ **每次打开新终端都需要重新激活虚拟环境**：`source .venv/bin/activate`
+
 ---
 
-## 运行示例
+## dual_arm_control 上位机
 
-### 单次执行示例：
+基于 Qt6 的双臂机器人统一控制 GUI，详细文档见 [`dual_arm_control/README.md`](dual_arm_control/README.md)。
+
+### 编译
+
 ```bash
-# 启动 Inovance 交互控制 (需指定端口，端口号根据 ls /dev/ttyUSB* 确定)
-INO_MOTOR_PORT=/dev/ttyUSB0 python ino_motor/interactive_control_cpp.py
+cd dual_arm_control
+mkdir -p build && cd build
+cmake ..
+make -j$(nproc)
+```
 
-# 启动 CyberGear 交互控制 (需指定端口，端口号根据 ls /dev/ttyUSB* 确定)
-CYBERGEAR_PORT=/dev/ttyUSB1 python CyberGear/interactive_control.py
+### 运行
+
+```bash
+sudo ./dual_arm_control
+```
+
+启动后在 GUI 界面中：
+
+1. 设备类型选择 **VCI**
+2. 波特率选择 **1000 kbps**
+3. 点击 **连接**
+
+---
+
+## 项目结构
+
+```
+DualArmRobot/
+├── dual_arm_control/    # Qt6 统一控制上位机 (C++)
+├── ino_motor/           # 汇川伺服电机驱动 (Python + C++ 扩展)
+├── CyberGear/           # 小米 CyberGear 微电机驱动
+├── ZE300/               # 瑞龙 ZE300 电机驱动
+├── inspire/             # Inspire 灵巧手控制 (RS485 / 网线通讯，非 CAN)
+├── HumanoidArms/        # 双臂机械臂 SDK
+├── requirements.txt     # Python 依赖清单
+└── docs/                # 文档资料
 ```
 
 ---
